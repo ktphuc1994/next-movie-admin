@@ -34,6 +34,7 @@ const Layout = ({
   icon = '/favicon.ico',
 }: InterfaceLayout) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [sideOpen, setSideOpen] = useState(false);
   const [errMess, setErrMess] = useState('');
 
   const { data: userInfo } = useSWR<
@@ -89,12 +90,12 @@ const Layout = ({
       </Head>
 
       <Box component="main" sx={{ display: 'flex' }}>
-        <Box component="div" sx={{ flexShrink: 0 }}>
-          <Sidebar />
+        <Box component="div" sx={{ flexShrink: { md: 0 } }}>
+          <Sidebar sideOpen={sideOpen} setSideOpen={setSideOpen} />
         </Box>
-        <Box component="div" sx={{ flexGrow: 1 }}>
-          <Header />
-          <Box component="div" sx={{ p: '1.5rem' }}>
+        <Box component="div" sx={{ flexGrow: 1, px: '1.5rem' }}>
+          <Header sideOpen={sideOpen} setSideOpen={setSideOpen} />
+          <Box component="div">
             {userInfo !== undefined && userInfo.loaiNguoiDung === 'ADMIN' ? (
               children
             ) : (

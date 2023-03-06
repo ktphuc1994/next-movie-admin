@@ -1,6 +1,11 @@
-import { Box } from '@mui/material';
+import { InterfaceHeader } from '../../interface/components/index.interface';
 
-const Header = () => {
+// import MUI components
+import { Box } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+
+const Header = ({ sideOpen, setSideOpen }: InterfaceHeader) => {
   return (
     <Box
       sx={{
@@ -9,7 +14,20 @@ const Header = () => {
         alignItems: 'center',
       }}
     >
-      <div>Logo</div>
+      <div>
+        {sideOpen ? null : (
+          <IconButton
+            onClick={() => {
+              setSideOpen(true);
+            }}
+            sx={{
+              display: { xs: 'inline-flex', md: 'none' },
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+        )}
+      </div>
       <div>User</div>
     </Box>
   );
