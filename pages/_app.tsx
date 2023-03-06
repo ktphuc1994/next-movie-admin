@@ -8,6 +8,11 @@ import type { AppProps } from 'next/app';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { theme } from '../core/theme';
 
+// import toastify
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import { SWRConfig } from 'swr';
+
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
@@ -22,12 +27,18 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <>
-      {getLayout(
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Component {...pageProps} />
-        </ThemeProvider>
-      )}
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <SWRConfig
+          value={{
+            revalidateOnFocus: false,
+            refreshInterval: 60 * 60 * 1000,
+          }}
+        >
+          {getLayout(<Component {...pageProps} />)}
+        </SWRConfig>
+      </ThemeProvider>
+      <ToastContainer />
     </>
   );
 }

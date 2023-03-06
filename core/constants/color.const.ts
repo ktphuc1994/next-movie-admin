@@ -23,5 +23,5 @@ export const colorConst = {
     main: '#810561',
     contrastText: '#fff',
   },
-  mode: 'dark',
+  // mode: 'dark',
 };
