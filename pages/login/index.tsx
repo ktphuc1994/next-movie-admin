@@ -15,20 +15,25 @@ import AlreadyLogin from '../../core/components/Login/AlreadyLogin';
 import InnerSpinner from '../../core/components/Spinner/InnerSpinner';
 
 // import MUI Components
-import { Box, CssBaseline } from '@mui/material';
+import { Box } from '@mui/material';
 import { ScreenSpinner } from '../../core/components/Spinner/ScreenSpinner';
+import { AxiosError } from 'axios';
+import { InterfaceUser } from '../../core/interface/models/user';
+import { commonConst } from '../../core/constants/common.const';
 
 const Login = () => {
+  const rejectedErr = commonConst.loginRejectedError;
   const [loading, setLoading] = useState<boolean>(false);
 
-  const {
-    data: userInfo,
-    error,
-    isLoading,
-  } = useSWR('user', userServ.getUserInfo, {
-    refreshInterval: 1000 * 60 * 60,
-    revalidateOnFocus: false,
-  });
+  const { data: userInfo, isLoading } = useSWR<InterfaceUser, AxiosError>(
+    'user',
+    userServ.getUserInfo,
+    {
+      onErrorRetry(err) {
+        if (rejectedErr.includes(err.response?.status)) return;
+      },
+    }
+  );
 
   return (
     <>
@@ -52,7 +57,6 @@ const Login = () => {
           alignItems: 'center',
         }}
       >
-        <CssBaseline />
         {isLoading ? <ScreenSpinner bg="rgba(0, 0, 0, 0.4)" /> : null}
         <Box
           sx={{
@@ -82,7 +86,11 @@ const Login = () => {
           >
             <InnerSpinner size="3rem" />
           </Box>
-          {userInfo ? <AlreadyLogin /> : <LoginPage setLoading={setLoading} />}
+          {userInfo && userInfo.loaiNguoiDung === 'ADMIN' ? (
+            <AlreadyLogin />
+          ) : (
+            <LoginPage setLoading={setLoading} />
+          )}
         </Box>
       </Box>
     </>

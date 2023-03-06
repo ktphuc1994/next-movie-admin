@@ -3,7 +3,7 @@ interface InterfaceCommonConst {
   customColor: Array<
     'darkMBlue' | 'brightRed' | 'darkOrange' | 'limeGreen' | 'darkPink'
   >;
-  loginRejectedError: number[];
+  loginRejectedError: Array<number | undefined>;
 }
 
 export const commonConst: InterfaceCommonConst = {
@@ -15,5 +15,5 @@ export const commonConst: InterfaceCommonConst = {
     'limeGreen',
     'darkPink',
   ],
-  loginRejectedError: [401],
+  loginRejectedError: [401, 500],
 };

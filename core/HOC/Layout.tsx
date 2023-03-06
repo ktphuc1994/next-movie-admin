@@ -7,10 +7,12 @@ import { toast } from 'react-toastify';
 
 // import local type and interface
 import { AxiosError } from 'axios';
+import { InterfaceUser } from '../interface/models/user';
 import { InterfaceLayout } from './interface/HOC.interface';
 
 // import local service
 import userServ from '../services/userServ';
+import localServ from '../services/localServ';
 import InnerSpinner from '../components/Spinner/InnerSpinner';
 
 // import local components
@@ -34,10 +36,18 @@ const Layout = ({
   const [modalOpen, setModalOpen] = useState(false);
   const [errMess, setErrMess] = useState('');
 
-  const { data: userInfo } = useSWR('user', userServ.getUserInfo, {
-    refreshInterval: 1000 * 60 * 60,
-    revalidateOnFocus: false,
-    onError: (err: AxiosError<{ error: string; message: string }>) => {
+  const { data: userInfo } = useSWR<
+    InterfaceUser,
+    AxiosError<{ error: string; message: string }>
+  >('user', userServ.getUserInfo, {
+    onError: (err) => {
+      const token = localServ.getToken();
+      if (!token) {
+        setErrMess('Vui lòng đăng nhập để tiếp tục truy cập');
+        setModalOpen(true);
+        return;
+      }
+
       const rejectedErr = commonConst.loginRejectedError;
       if (err.response) {
         if (
@@ -51,7 +61,7 @@ const Layout = ({
         toast(err.response.data.message, { type: 'error' });
       }
     },
-    onErrorRetry(err: AxiosError) {
+    onErrorRetry(err) {
       const rejectedErr = commonConst.loginRejectedError;
       if (err.response && rejectedErr.includes(err.response.status)) return;
     },

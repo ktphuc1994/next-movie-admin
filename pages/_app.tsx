@@ -11,6 +11,7 @@ import { theme } from '../core/theme';
 // import toastify
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import { SWRConfig } from 'swr';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -22,31 +23,22 @@ type AppPropsWithLayout = AppProps & {
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
-  const getLayout = (page: ReactElement): ReactNode => {
-    if (Component.getLayout) {
-      return (
-        <>
-          {Component.getLayout(page)}
-          <ToastContainer />
-        </>
-      );
-    }
-    return (
-      <>
-        {page}
-        <ToastContainer />
-      </>
-    );
-  };
+  const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
     <>
-      {getLayout(
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Component {...pageProps} />
-        </ThemeProvider>
-      )}
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <SWRConfig
+          value={{
+            revalidateOnFocus: false,
+            refreshInterval: 60 * 60 * 1000,
+          }}
+        >
+          {getLayout(<Component {...pageProps} />)}
+        </SWRConfig>
+      </ThemeProvider>
+      <ToastContainer />
     </>
   );
 }

@@ -30,6 +30,7 @@ import {
 } from '@mui/material';
 import { LockPerson, Visibility, VisibilityOff } from '@mui/icons-material';
 import { InterfaceLoginPageComponent } from '../../interface/components/index.interface';
+import { mutate } from 'swr';
 
 const inputStyle: SxProps<Theme> = {
   '& label': { color: 'white', '&.Mui-focused': { color: 'white' } },
@@ -76,8 +77,10 @@ const LoginPage = ({ setLoading }: InterfaceLoginPageComponent) => {
           type: 'success',
           autoClose: 2000,
         });
+        mutate('user', userInfo, { revalidate: false });
         router.replace('/');
       } else {
+        localServ.removeToken();
         toast(
           'Người dùng không đủ quyền truy cập. Vui lòng chọn tài khoản khác.',
           { type: 'error', autoClose: 3000 }
