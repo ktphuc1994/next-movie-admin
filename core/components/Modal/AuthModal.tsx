@@ -1,5 +1,8 @@
 import Link from 'next/link';
 
+// import SWR
+import { mutate } from 'swr';
+
 // import MUI Components
 import {
   Button,
@@ -14,6 +17,7 @@ import localServ from '../../services/localServ';
 const AuthModal = ({ open, message }: { open: boolean; message: string }) => {
   const handleLogin = () => {
     localServ.removeToken();
+    mutate('user', undefined, false);
   };
 
   return (

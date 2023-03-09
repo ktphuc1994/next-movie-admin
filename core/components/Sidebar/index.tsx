@@ -1,14 +1,18 @@
-import * as React from 'react';
+import { memo } from 'react';
+
+// import MUI components
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import { Box, Divider, IconButton } from '@mui/material';
 import MuiDrawer from '@mui/material/Drawer';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import SidebarContent from './SidebarContent';
+
+// import local types and interface
 import { InterfaceSidebar } from '../../interface/components/index.interface';
+
+// import local components
+import SidebarContent from './SidebarContent';
 
 const drawerWidth = 240;
 
@@ -59,7 +63,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-const Sidebar = ({ sideOpen, setSideOpen }: InterfaceSidebar) => {
+const Sidebar = memo(({ sideOpen, setSideOpen }: InterfaceSidebar) => {
   const theme = useTheme();
 
   const handleDrawerOpen = () => {
@@ -126,6 +130,6 @@ const Sidebar = ({ sideOpen, setSideOpen }: InterfaceSidebar) => {
       </MuiDrawer>
     </Box>
   );
-};
+});
 
 export default Sidebar;

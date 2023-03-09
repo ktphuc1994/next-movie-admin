@@ -12,27 +12,21 @@ import userServ from '../../core/services/userServ';
 // import local components
 import LoginPage from '../../core/components/Login/LoginPage';
 import AlreadyLogin from '../../core/components/Login/AlreadyLogin';
+import { ScreenSpinner } from '../../core/components/Spinner/ScreenSpinner';
 import InnerSpinner from '../../core/components/Spinner/InnerSpinner';
+
+// import type and interface
+import { InterfaceUser } from '../../core/interface/models/user';
 
 // import MUI Components
 import { Box } from '@mui/material';
-import { ScreenSpinner } from '../../core/components/Spinner/ScreenSpinner';
-import { AxiosError } from 'axios';
-import { InterfaceUser } from '../../core/interface/models/user';
-import { commonConst } from '../../core/constants/common.const';
 
 const Login = () => {
-  const rejectedErr = commonConst.loginRejectedError;
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { data: userInfo, isLoading } = useSWR<InterfaceUser, AxiosError>(
+  const { data: userInfo, isLoading } = useSWR<InterfaceUser>(
     'user',
-    userServ.getUserInfo,
-    {
-      onErrorRetry(err) {
-        if (rejectedErr.includes(err.response?.status)) return;
-      },
-    }
+    userServ.getUserInfo
   );
 
   return (
@@ -63,6 +57,7 @@ const Login = () => {
             backgroundColor: 'rgba(0, 0, 0, 0.4)',
             backdropFilter: 'blur(7px)',
             borderRadius: '12px',
+            margin: '0.5rem',
             padding: '2rem',
             display: 'flex',
             flexDirection: 'column',

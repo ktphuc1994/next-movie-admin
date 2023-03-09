@@ -11,7 +11,10 @@ import { theme } from '../core/theme';
 // import toastify
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+
+// import SWR
 import { SWRConfig } from 'swr';
+import swrConfig from '../core/config/swrConfig';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -29,12 +32,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <SWRConfig
-          value={{
-            revalidateOnFocus: false,
-            refreshInterval: 60 * 60 * 1000,
-          }}
-        >
+        <SWRConfig value={swrConfig}>
           {getLayout(<Component {...pageProps} />)}
         </SWRConfig>
       </ThemeProvider>

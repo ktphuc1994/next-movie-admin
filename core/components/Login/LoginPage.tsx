@@ -71,13 +71,13 @@ const LoginPage = ({ setLoading }: InterfaceLoginPageComponent) => {
       const { Authorization } = await userServ.login({ email, matKhau });
       localServ.setToken(Authorization);
 
-      const userInfo = await userServ.getUserInfo();
-      if (userInfo.loaiNguoiDung === 'ADMIN') {
+      const userInfo = await mutate('user');
+      if (userInfo?.loaiNguoiDung === 'ADMIN') {
         toast('Đăng nhập thành công', {
           type: 'success',
           autoClose: 2000,
+          toastId: 'login-transition',
         });
-        mutate('user', userInfo, { revalidate: false });
         router.replace('/');
       } else {
         localServ.removeToken();
