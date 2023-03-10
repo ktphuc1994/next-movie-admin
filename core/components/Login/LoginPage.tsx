@@ -8,8 +8,15 @@ import userServ from '../../services/userServ';
 import localServ from '../../services/localServ';
 
 // import local library
+import { mutate } from 'swr';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
+
+// import types and interfaces
+import { InterfaceLoginPageComponent } from '../../interface/components/index.interface';
+
+// import local components
+import StyledTextField, { inputStyle } from '../Styled/StyledTextField';
 
 // import local utils
 import { unknownErr } from '../../utilities';
@@ -18,38 +25,14 @@ import { unknownErr } from '../../utilities';
 import {
   Box,
   Typography,
-  TextField,
   InputLabel,
   OutlinedInput,
   InputAdornment,
   IconButton,
   FormControl,
   Button,
-  SxProps,
-  Theme,
 } from '@mui/material';
 import { LockPerson, Visibility, VisibilityOff } from '@mui/icons-material';
-import { InterfaceLoginPageComponent } from '../../interface/components/index.interface';
-import { mutate } from 'swr';
-
-const inputStyle: SxProps<Theme> = {
-  '& label': { color: 'white', '&.Mui-focused': { color: 'white' } },
-  '& .MuiInputBase-root': {
-    '&:hover fieldset': { borderColor: 'white' },
-    fieldset: {
-      borderColor: 'rgba(255, 255, 255, 0.23)',
-    },
-    input: {
-      color: 'white',
-      '&:-webkit-autofill': {
-        transition: 'background-color 600000s 0s, color 600000s 0s',
-      },
-    },
-  },
-  '&.MuiFormControl-root .Mui-focused fieldset': {
-    borderColor: 'white',
-  },
-};
 
 const LoginPage = ({ setLoading }: InterfaceLoginPageComponent) => {
   const router = useRouter();
@@ -111,7 +94,7 @@ const LoginPage = ({ setLoading }: InterfaceLoginPageComponent) => {
         Login In
       </Typography>
       <Box component="form" onSubmit={handleSummit}>
-        <TextField
+        <StyledTextField
           margin="normal"
           required
           fullWidth
@@ -122,7 +105,7 @@ const LoginPage = ({ setLoading }: InterfaceLoginPageComponent) => {
           defaultValue=""
           autoComplete="email"
           autoFocus
-          sx={{ ...inputStyle, mb: '1rem' }}
+          sx={{ mb: '1rem' }}
         />
         <FormControl
           sx={{ ...inputStyle, width: '100%' }}

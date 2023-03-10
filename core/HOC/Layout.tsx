@@ -74,9 +74,11 @@ const Layout = ({
       );
       setModalOpen(true);
     }
+    // console.log('useEffect');
   }, [userInfo, userErr]);
 
   // console.log('userErr & userInfo: ', { userErr, userInfo });
+  // console.log('Layout');
 
   return (
     <>
@@ -88,7 +90,6 @@ const Layout = ({
       </Head>
 
       <Box component="main" sx={{ display: 'flex' }}>
-        {/* {children} */}
         <Box component="div" sx={{ flexShrink: { md: 0 } }}>
           <Sidebar sideOpen={sideOpen} setSideOpen={setSideOpen} />
         </Box>
@@ -109,6 +110,7 @@ const Layout = ({
             ) : (
               <InnerSpinner size="4rem" thickness={4} />
             )}
+            {/* {children} */}
           </Box>
           <Footer />
         </Box>
