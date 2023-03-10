@@ -7,11 +7,19 @@ import type { AppProps } from 'next/app';
 // import MUI components
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { theme } from '../core/theme';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 // import toastify
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+
+// import SWR
 import { SWRConfig } from 'swr';
+import swrConfig from '../core/config/swrConfig';
+
+// import local context
+import { CommonProvider } from '../core/context/CommonContext';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -27,17 +35,16 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <SWRConfig
-          value={{
-            revalidateOnFocus: false,
-            refreshInterval: 60 * 60 * 1000,
-          }}
-        >
-          {getLayout(<Component {...pageProps} />)}
-        </SWRConfig>
-      </ThemeProvider>
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <SWRConfig value={swrConfig}>
+            <CommonProvider>
+              {getLayout(<Component {...pageProps} />)}
+            </CommonProvider>
+          </SWRConfig>
+        </ThemeProvider>
+      </LocalizationProvider>
       <ToastContainer />
     </>
   );

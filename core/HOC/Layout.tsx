@@ -34,13 +34,16 @@ const Layout = ({
   icon = '/favicon.ico',
 }: InterfaceLayout) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [sideOpen, setSideOpen] = useState(false);
   const [errMess, setErrMess] = useState('');
 
-  const { data: userInfo } = useSWR<
+  const { data: userInfo, error: userErr } = useSWR<
     InterfaceUser,
     AxiosError<{ error: string; message: string }>
-  >('user', userServ.getUserInfo, {
-    onError: (err) => {
+  >('user', userServ.getUserInfo);
+
+  useEffect(() => {
+    if (userErr) {
       const token = localServ.getToken();
       if (!token) {
         setErrMess('Vui lòng đăng nhập để tiếp tục truy cập');
@@ -48,36 +51,34 @@ const Layout = ({
         return;
       }
 
-      const rejectedErr = commonConst.loginRejectedError;
-      if (err.response) {
+      if (userErr.response) {
+        const rejectedErr = commonConst.loginRejectedError;
         if (
-          rejectedErr.includes(err.response.status) &&
-          err.response.data.message === 'Unauthorized. Token related'
+          rejectedErr.includes(userErr.response.status) &&
+          userErr.response.data.message === 'Unauthorized. Token related'
         ) {
           setErrMess('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại');
           setModalOpen(true);
           return;
         }
-        toast(err.response.data.message, { type: 'error' });
+        toast(userErr.response.data.message ?? userErr.message, {
+          type: 'error',
+        });
+        return;
       }
-    },
-    onErrorRetry(err) {
-      const rejectedErr = commonConst.loginRejectedError;
-      if (err.response && rejectedErr.includes(err.response.status)) return;
-    },
-  });
+    }
 
-  useEffect(() => {
-    if (userInfo && userInfo?.loaiNguoiDung !== 'ADMIN') {
+    if (userInfo && userInfo.loaiNguoiDung !== 'ADMIN') {
       setErrMess(
         'Người dùng không đủ quyền truy cập, vui lòng sử dụng tài khoản khác.'
       );
       setModalOpen(true);
     }
-    return () => {
-      setModalOpen(false);
-    };
-  }, [userInfo]);
+    // console.log('useEffect');
+  }, [userInfo, userErr]);
+
+  // console.log('userErr & userInfo: ', { userErr, userInfo });
+  // console.log('Layout');
 
   return (
     <>
@@ -89,17 +90,27 @@ const Layout = ({
       </Head>
 
       <Box component="main" sx={{ display: 'flex' }}>
-        <Box component="div" sx={{ flexShrink: 0 }}>
-          <Sidebar />
+        <Box component="div" sx={{ flexShrink: { md: 0 } }}>
+          <Sidebar sideOpen={sideOpen} setSideOpen={setSideOpen} />
         </Box>
-        <Box component="div" sx={{ flexGrow: 1 }}>
-          <Header />
-          <Box component="div" sx={{ p: '1.5rem' }}>
+        <Box
+          component="div"
+          sx={{
+            flexGrow: 1,
+            px: '1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+          }}
+        >
+          <Header sideOpen={sideOpen} setSideOpen={setSideOpen} />
+          <Box component="div" sx={{ flexGrow: 1 }}>
             {userInfo !== undefined && userInfo.loaiNguoiDung === 'ADMIN' ? (
               children
             ) : (
-              <InnerSpinner />
+              <InnerSpinner size="4rem" thickness={4} />
             )}
+            {/* {children} */}
           </Box>
           <Footer />
         </Box>

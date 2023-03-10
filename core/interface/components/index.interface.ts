@@ -13,3 +13,10 @@ export interface InterfaceInnerSpinner extends InterfaceBaseProps {
 export interface InterfaceLoginPageComponent extends InterfaceBaseProps {
   setLoading: Dispatch<SetStateAction<boolean>>;
 }
+
+export interface InterfaceSidebar extends InterfaceBaseProps {
+  sideOpen: boolean;
+  setSideOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export interface InterfaceHeader extends InterfaceSidebar {}
