@@ -1,4 +1,10 @@
-import { Dispatch, ReactElement, SetStateAction } from 'react';
+import { Moment } from 'moment';
+import {
+  Dispatch,
+  MutableRefObject,
+  ReactElement,
+  SetStateAction,
+} from 'react';
 
 export interface InterfaceBaseProps {
   className?: string;
@@ -20,3 +26,9 @@ export interface InterfaceSidebar extends InterfaceBaseProps {
 }
 
 export interface InterfaceHeader extends InterfaceSidebar {}
+
+export interface InterfaceSearchBar extends InterfaceBaseProps {
+  tenPhimRef: MutableRefObject<HTMLInputElement | null>;
+  fromDateRef: MutableRefObject<Moment | null>;
+  toDateRef: MutableRefObject<Moment | null>;
+}

@@ -5,30 +5,25 @@ import { NextPageWithLayout } from './_app';
 import movieServ from '../core/services/movieServ';
 
 // import local library
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 
 // import types and interfaces
 import { Moment } from 'moment';
 
 // import local components
 import Layout from '../core/HOC/Layout';
+import SearchBar from '../core/components/Movie/List/SearchBar';
+import MovieTable from '../core/components/Movie/List/MovieTable';
 
 // import MUI components
-import {
-  Box,
-  Button,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { Box, Button, Typography } from '@mui/material';
 
 const Home: NextPageWithLayout = () => {
   const tenPhimRef = useRef<HTMLInputElement | null>(null);
   const fromDateRef = useRef<Moment | null>(null);
   const toDateRef = useRef<Moment | null>(null);
-  const { data } = useSWR('movieList', () => {
+
+  const { data: moviePagi } = useSWR('movieList', () => {
     const tenPhim = tenPhimRef.current?.value ?? '';
     return movieServ.getMoviePagi(
       tenPhim,
@@ -37,62 +32,29 @@ const Home: NextPageWithLayout = () => {
     );
   });
 
-  console.log({ data });
-
-  const handleSearch = () => {
-    mutate('movieList');
-  };
-  const handleResetTenPhim = () => {
-    tenPhimRef.current ? (tenPhimRef.current.value = '') : null;
-  };
-
   return (
-    <Box component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-      <TextField
-        size="small"
-        margin="none"
-        id="tenPhimInput"
-        label="Tên phim"
-        name="tenPhim"
-        type="text"
-        defaultValue=""
-        inputRef={tenPhimRef}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="tenPhim-reset"
-                onClick={handleResetTenPhim}
-                edge="end"
-              >
-                <ClearIcon fontSize="small" />
-              </IconButton>
-            </InputAdornment>
-          ),
+    <Box component="div">
+      <Box
+        component="div"
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mx: '1rem',
+          mb: '1rem',
         }}
+      >
+        <Typography component="h1" fontSize="2rem" fontWeight="bold">
+          Movie List
+        </Typography>
+        <Button variant="contained">Create movie</Button>
+      </Box>
+      <SearchBar
+        tenPhimRef={tenPhimRef}
+        fromDateRef={fromDateRef}
+        toDateRef={toDateRef}
       />
-      <DatePicker
-        label="Từ ngày"
-        format="DD/MM/YYYY"
-        slotProps={{ textField: { size: 'small' } }}
-        onChange={(newValue: Moment | null) => {
-          fromDateRef.current = newValue;
-        }}
-      />
-      <DatePicker
-        label="Đến ngày"
-        format="DD/MM/YYYY"
-        slotProps={{
-          textField: { size: 'small' },
-          actionBar: { actions: ['clear'] },
-        }}
-        onChange={(newValue: Moment | null) => {
-          toDateRef.current = newValue;
-        }}
-      />
-      <Button variant="contained" onClick={handleSearch}>
-        Search
-      </Button>
+      <MovieTable />
     </Box>
   );
 };
