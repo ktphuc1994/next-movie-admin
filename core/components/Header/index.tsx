@@ -8,7 +8,8 @@ import { InterfaceHeader } from '../../interface/components/index.interface';
 import UserNav from './UserNav';
 
 // import MUI components
-import { Box, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 

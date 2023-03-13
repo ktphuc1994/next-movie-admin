@@ -6,7 +6,7 @@ import { commonConst } from '../constants/common.const';
 import { urlConst } from '../constants/url.const';
 
 // import local library
-import moment, { Moment } from 'moment';
+import { Moment } from 'moment';
 import { InterfaceMoviePagi } from '../interface/models/movie';
 
 const movieServ = {

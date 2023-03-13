@@ -11,16 +11,14 @@ import { InterfaceUser } from '../../interface/models/user';
 import localServ from '../../services/localServ';
 
 // import MUI components
-import {
-  Box,
-  Avatar,
-  Button,
-  Divider,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-} from '@mui/material';
-import { Logout } from '@mui/icons-material';
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 // import local components
 import InnerSpinner from '../Spinner/InnerSpinner';
@@ -91,7 +89,7 @@ const UserNav = memo(() => {
         <Divider />
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
-            <Logout fontSize="small" />
+            <LogoutIcon fontSize="small" />
           </ListItemIcon>
           Logout
         </MenuItem>

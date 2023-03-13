@@ -19,7 +19,7 @@ import InnerSpinner from '../../core/components/Spinner/InnerSpinner';
 import { InterfaceUser } from '../../core/interface/models/user';
 
 // import MUI Components
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 
 const Login = () => {
   const [loading, setLoading] = useState<boolean>(false);

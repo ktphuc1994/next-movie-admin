@@ -25,7 +25,7 @@ import AuthModal from '../components/Modal/AuthModal';
 import { commonConst } from '../constants/common.const';
 
 // import MUI components
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 
 const Layout = ({
   children,

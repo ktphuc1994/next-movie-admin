@@ -1,13 +1,11 @@
 import { useRouter } from 'next/router';
 
 // import MUI components
-import {
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import ArticleIcon from '@mui/icons-material/Article';
 

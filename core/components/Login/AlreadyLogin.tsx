@@ -1,6 +1,9 @@
-import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { Button, Typography } from '@mui/material';
 import Link from 'next/link';
+
+// import MUI components
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 const AlreadyLogin = () => {
   return (

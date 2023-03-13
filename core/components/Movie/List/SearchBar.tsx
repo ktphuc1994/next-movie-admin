@@ -1,22 +1,20 @@
 import { memo } from 'react';
 
-// import MUI components
-import {
-  Box,
-  Button,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import types and interfaces
+import { Moment } from 'moment';
+import { InterfaceSearchBar } from 'core/interface/components/index.interface';
 
 // import local library
 import { mutate } from 'swr';
 
-// import types and interfaces
-import { Moment } from 'moment';
-import { InterfaceSearchBar } from 'core/interface/components/index.interface';
+// import MUI components
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField from '@mui/material/TextField';
+import ClearIcon from '@mui/icons-material/Clear';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker/';
 
 const SearchBar = memo(
   ({ tenPhimRef, fromDateRef, toDateRef }: InterfaceSearchBar) => {
