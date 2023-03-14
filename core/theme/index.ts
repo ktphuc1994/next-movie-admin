@@ -10,6 +10,7 @@ declare module '@mui/material/styles' {
     darkMBlue: Palette['primary'];
     brightRed: Palette['primary'];
     darkOrange: Palette['primary'];
+    editYellow: Palette['primary'];
     limeGreen: Palette['primary'];
     darkPink: Palette['primary'];
   }
@@ -19,6 +20,7 @@ declare module '@mui/material/styles' {
     darkMBlue?: PaletteOptions['primary'];
     brightRed?: PaletteOptions['primary'];
     darkOrange?: PaletteOptions['primary'];
+    editYellow?: PaletteOptions['primary'];
     limeGreen?: PaletteOptions['primary'];
     darkPink?: PaletteOptions['primary'];
   }
@@ -38,6 +40,18 @@ declare module '@mui/material/Button' {
     darkMBlue: true;
     brightRed: true;
     darkOrange: true;
+    editYellow: true;
+    limeGreen: true;
+    darkPink: true;
+  }
+}
+
+declare module '@mui/material/IconButton' {
+  interface IconButtonPropsColorOverrides {
+    darkMBlue: true;
+    brightRed: true;
+    darkOrange: true;
+    editYellow: true;
     limeGreen: true;
     darkPink: true;
   }
@@ -48,6 +62,7 @@ declare module '@mui/material/Chip' {
     darkMBlue: true;
     brightRed: true;
     darkOrange: true;
+    editYellow: true;
     limeGreen: true;
     darkPink: true;
   }
@@ -58,6 +73,7 @@ declare module '@mui/material/Box' {
     darkMBlue: true;
     brightRed: true;
     darkOrange: true;
+    editYellow: true;
     limeGreen: true;
     darkPink: true;
   }

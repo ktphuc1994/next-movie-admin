@@ -55,3 +55,13 @@ export interface InterfaceEnhancedTableHead extends InterfaceBaseProps {
     property: keyof InterfaceMovie
   ) => void;
 }
+
+export interface InterfaceMovieTableComponents extends InterfaceSearchBar {
+  setDialogOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export interface InterfaceMovieFormComponents extends InterfaceBaseProps {
+  dialogOpen: boolean;
+  setDialogOpen: Dispatch<SetStateAction<boolean>>;
+  movieDetail?: InterfaceMovie;
+}

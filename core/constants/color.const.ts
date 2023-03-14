@@ -15,6 +15,10 @@ export const colorConst = {
     main: '#FF4D00',
     contrastText: '#fff',
   },
+  editYellow: {
+    main: '#FFD800',
+    contrastText: '#000',
+  },
   limeGreen: {
     main: '#05C793',
     contrastText: '#000',

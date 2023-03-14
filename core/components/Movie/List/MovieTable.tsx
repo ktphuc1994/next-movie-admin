@@ -1,15 +1,17 @@
 import { ChangeEvent, useState } from 'react';
+import { useRouter } from 'next/router';
 
 // import local library
-import { useSWRConfig } from 'swr';
+import useSWR from 'swr';
 import moment from 'moment';
 
+// import local services
+import movieServ from '../../../services/movieServ';
+
 // import interface and type
-import {
-  InterfaceMovie,
-  InterfaceMoviePagi,
-} from 'core/interface/models/movie';
 import { Order } from 'core/interface/common/index.interface';
+import { InterfaceMovie } from 'core/interface/models/movie';
+import { InterfaceMovieTableComponents } from 'core/interface/components/index.interface';
 
 // import local components
 import EnhancedTableHead from './TableHead';
@@ -34,20 +36,32 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import IconButton from '@mui/material/IconButton';
 
-const MovieTable = () => {
-  const { cache } = useSWRConfig();
+const MovieTable = ({
+  tenPhimRef,
+  fromDateRef,
+  toDateRef,
+  setDialogOpen,
+}: InterfaceMovieTableComponents) => {
+  const router = useRouter();
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof InterfaceMovie>('ngayKhoiChieu');
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const moviePagiCache = cache.get('movieList')?.data as
-    | InterfaceMoviePagi
-    | undefined;
-  if (!moviePagiCache) return <div>...Loading</div>;
-  const movieList = moviePagiCache.items;
+  const { data: moviePagi } = useSWR('movieList', () => {
+    const tenPhim = tenPhimRef.current?.value ?? '';
+    return movieServ.getMoviePagi(
+      tenPhim,
+      fromDateRef.current ?? undefined,
+      toDateRef.current ?? undefined
+    );
+  });
+
+  if (!moviePagi) return <div>...Loading</div>;
+  const movieList = moviePagi.items;
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -73,11 +87,21 @@ const MovieTable = () => {
     setDense(event.target.checked);
   };
 
+  // Handle movie API
+  const handleTenPhimClick = (maPhim: number) => () => {
+    router.push(`/movie/${maPhim}`);
+  };
+
   const handleSelectStatus = (e: SelectChangeEvent) => {
     console.log(e);
   };
+
   const handleCheckHot = (e: ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.checked);
+  };
+
+  const handleMovieEdit = () => {
+    setDialogOpen(true);
   };
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -87,7 +111,7 @@ const MovieTable = () => {
   return (
     <Box sx={{ width: '100%' }}>
       {/* <Paper sx={{ width: '100%', mb: 2, overflow: 'hidden' }}> */}
-      <TableContainer>
+      <TableContainer sx={{ overflowX: 'inherit' }}>
         <Table
           aria-label="sticky table"
           aria-labelledby="tableTitle"
@@ -116,7 +140,24 @@ const MovieTable = () => {
                     <TableCell component="th" id={labelId} scope="row">
                       {row.maPhim}
                     </TableCell>
-                    <TableCell align="left">{row.tenPhim}</TableCell>
+                    <TableCell
+                      align="left"
+                      onClick={handleTenPhimClick(row.maPhim)}
+                      sx={{
+                        cursor: 'pointer',
+                        div: {
+                          transition: 'all 0.3s',
+                        },
+                        '&:hover': {
+                          div: {
+                            transform: 'scale(1.05)',
+                            fontWeight: 600,
+                          },
+                        },
+                      }}
+                    >
+                      <div>{row.tenPhim}</div>
+                    </TableCell>
                     <TableCell align="right">
                       {moment(row.ngayKhoiChieu).format('DD/MM/YYYY')}
                     </TableCell>
@@ -148,11 +189,15 @@ const MovieTable = () => {
                           alignItems: 'center',
                         }}
                       >
-                        <BorderColorIcon
-                          sx={{ mr: '0.5rem' }}
-                          color="warning"
-                        />
-                        <DeleteOutlineIcon color="error" />
+                        <IconButton
+                          color="editYellow"
+                          onClick={handleMovieEdit}
+                        >
+                          <BorderColorIcon />
+                        </IconButton>
+                        <IconButton color="error">
+                          <DeleteOutlineIcon />
+                        </IconButton>
                       </Box>
                     </TableCell>
                   </TableRow>

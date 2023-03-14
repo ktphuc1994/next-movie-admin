@@ -1,11 +1,5 @@
-import { ReactElement, useRef } from 'react';
+import { ReactElement, useRef, useState } from 'react';
 import { NextPageWithLayout } from './_app';
-
-// import local service
-import movieServ from '../core/services/movieServ';
-
-// import local library
-import useSWR from 'swr';
 
 // import types and interfaces
 import { Moment } from 'moment';
@@ -14,6 +8,7 @@ import { Moment } from 'moment';
 import Layout from '../core/HOC/Layout';
 import SearchBar from '../core/components/Movie/List/SearchBar';
 import MovieTable from '../core/components/Movie/List/MovieTable';
+import MovieCreate from '../core/components/Movie/Form';
 
 // import MUI components
 import Box from '@mui/material/Box';
@@ -24,15 +19,7 @@ const Home: NextPageWithLayout = () => {
   const tenPhimRef = useRef<HTMLInputElement | null>(null);
   const fromDateRef = useRef<Moment | null>(null);
   const toDateRef = useRef<Moment | null>(null);
-
-  const { data: moviePagi } = useSWR('movieList', () => {
-    const tenPhim = tenPhimRef.current?.value ?? '';
-    return movieServ.getMoviePagi(
-      tenPhim,
-      fromDateRef.current ?? undefined,
-      toDateRef.current ?? undefined
-    );
-  });
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   return (
     <Box component="div">
@@ -49,14 +36,27 @@ const Home: NextPageWithLayout = () => {
         <Typography component="h1" fontSize="2rem" fontWeight="bold">
           Movie List
         </Typography>
-        <Button variant="contained">Create movie</Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setDialogOpen(true);
+          }}
+        >
+          Create movie
+        </Button>
       </Box>
       <SearchBar
         tenPhimRef={tenPhimRef}
         fromDateRef={fromDateRef}
         toDateRef={toDateRef}
       />
-      <MovieTable />
+      <MovieTable
+        tenPhimRef={tenPhimRef}
+        fromDateRef={fromDateRef}
+        toDateRef={toDateRef}
+        setDialogOpen={setDialogOpen}
+      />
+      <MovieCreate dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} />
     </Box>
   );
 };

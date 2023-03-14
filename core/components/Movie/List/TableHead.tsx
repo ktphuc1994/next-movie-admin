@@ -49,7 +49,7 @@ const EnhancedTableHead = ({
     };
 
   return (
-    <TableHead>
+    <TableHead sx={{ position: 'sticky', top: 0, zIndex: 1 }}>
       <TableRow sx={{ backgroundColor: 'lightgray' }}>
         {headCells.map((headCell) => (
           <TableCell
