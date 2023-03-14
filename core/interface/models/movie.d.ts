@@ -11,6 +11,17 @@ export interface InterfaceMovie {
   sapChieu: boolean;
 }
 
+export interface InterfaceMovieFormData {
+  tenPhim: string;
+  trailer: string;
+  hinhAnh: string;
+  moTa: string;
+  danhGia: number;
+  hot?: boolean;
+  dangChieu: boolean;
+  sapChieu: boolean;
+}
+
 export interface InterfaceMoviePagi {
   currentPage: number;
   items: InterfaceMovie[];

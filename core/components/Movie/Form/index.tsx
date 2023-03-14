@@ -1,4 +1,11 @@
-import { FormEvent, forwardRef, ReactElement, Ref, useRef } from 'react';
+import {
+  FormEvent,
+  KeyboardEvent,
+  forwardRef,
+  ReactElement,
+  Ref,
+  useRef,
+} from 'react';
 
 // import types and interfaces
 import { InterfaceMovieFormComponents } from '../../../interface/components/index.interface';
@@ -24,6 +31,9 @@ import Checkbox from '@mui/material/Checkbox';
 import { TransitionProps } from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
 import { DatePicker } from '@mui/x-date-pickers';
+import { InterfaceMovieFormData } from '../../../interface/models/movie';
+import { Autocomplete } from '@mui/material';
+import { danhGiaOption } from '../../../constants/default.const';
 
 const defaultMovieDetail = {
   maPhim: 0,
@@ -57,11 +67,37 @@ const MovieForm = ({
   const handleClose = () => {
     setDialogOpen(false);
   };
+  const handleDanhGiaKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      // Prevent's default 'Enter' behavior.
+      event.preventDefault();
+      // your handler code
+    }
+  };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    console.log('Form data: ', data);
+    const formData = new FormData(e.currentTarget);
+    let newFormData = [];
+    for (const [key, value] of formData.entries()) {
+      switch (key) {
+        case 'hot':
+          newFormData.push([key, true]);
+          break;
+        case 'dangChieu':
+          const dangChieuValue = value === 'true' ? true : false;
+          newFormData.push([key, dangChieuValue]);
+          newFormData.push(['sapChieu', !dangChieuValue]);
+          break;
+        default:
+          newFormData.push([key, value]);
+          break;
+      }
+    }
+    const formJson = Object.fromEntries(newFormData) as InterfaceMovieFormData;
+    let hot: boolean;
+    formJson.hot ? (hot = true) : (hot = false);
+    console.log('Form data: ', formJson);
   };
 
   return (
@@ -99,7 +135,7 @@ const MovieForm = ({
           </Typography>
         ) : null}
         <Box component="form" id="movie-form" onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
+          <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
                 name="tenPhim"
@@ -134,19 +170,17 @@ const MovieForm = ({
                 required
                 fullWidth
                 multiline
-                rows={5}
+                maxRows={20}
                 id="moTa-form"
                 label="Mô tả"
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6} md={4}>
               <DatePicker
-                label="Từ ngày"
+                label="Ngày khởi chiếu"
                 format="DD/MM/YYYY"
-                defaultValue={moment(Date.now())}
-                sx={{ mx: { xs: 0, md: '1rem' } }}
                 slotProps={{
-                  textField: { size: 'small' },
+                  textField: { fullWidth: true },
                   actionBar: { actions: ['clear'] },
                 }}
                 onChange={(newValue: Moment | null) => {
@@ -154,13 +188,7 @@ const MovieForm = ({
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox name="hot" value={true} color="primary" />}
-                label="hot"
-              />
-            </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6} md={3}>
               <FormControl fullWidth>
                 <InputLabel id="dangChieu-form-label">Tình trạng</InputLabel>
                 <Select
@@ -168,11 +196,39 @@ const MovieForm = ({
                   id="dangChieu-form"
                   label="Tình trạng"
                   name="dangChieu"
+                  defaultValue="false"
                 >
                   <MenuItem value="true">Đang chiếu</MenuItem>
                   <MenuItem value="false">Sắp chiếu</MenuItem>
                 </Select>
               </FormControl>
+            </Grid>
+            <Grid item xs={6} md={2}>
+              <Autocomplete
+                disablePortal
+                onKeyDown={handleDanhGiaKeyDown}
+                id="danhGia-form"
+                options={danhGiaOption}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    name="danhGia"
+                    label="Đánh giá"
+                  />
+                )}
+              />
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              md={2}
+              sx={{ display: 'flex', alignItems: 'center' }}
+            >
+              <FormControlLabel
+                control={<Checkbox name="hot" value={'true'} color="primary" />}
+                label="hot"
+              />
             </Grid>
           </Grid>
         </Box>

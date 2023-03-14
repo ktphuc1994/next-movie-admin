@@ -22,9 +22,10 @@ const Header = memo(({ sideOpen, setSideOpen }: InterfaceHeader) => {
         alignItems: 'center',
         flexShrink: 0,
         my: '0.5rem',
+        mx: { xs: '-1rem', md: 0 },
       }}
     >
-      <div>
+      <Box component="div" sx={{ display: 'flex', alignItems: 'center' }}>
         {sideOpen ? null : (
           <IconButton
             onClick={() => {
@@ -32,6 +33,7 @@ const Header = memo(({ sideOpen, setSideOpen }: InterfaceHeader) => {
             }}
             sx={{
               display: { xs: 'inline-flex', md: 'none' },
+              mr: '0.5rem',
             }}
           >
             <MenuIcon />
@@ -58,7 +60,7 @@ const Header = memo(({ sideOpen, setSideOpen }: InterfaceHeader) => {
             MOVIE
           </Typography>
         </Link>
-      </div>
+      </Box>
       <Box component="div">
         <UserNav />
       </Box>
