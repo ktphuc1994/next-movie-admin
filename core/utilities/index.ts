@@ -2,10 +2,7 @@ import { toast } from 'react-toastify';
 import { Order } from '../interface/common/index.interface';
 
 const unknownErr = () => {
-  toast('Lỗi không xác định. Vui lòng thử lại sau.', {
-    type: 'error',
-    autoClose: 2000,
-  });
+  toast.error('Lỗi không xác định. Vui lòng thử lại sau.');
 };
 
 const collator = new Intl.Collator('en', { numeric: true });
@@ -35,8 +32,8 @@ const getComparator = <Key extends keyof any>(
   order: Order,
   orderBy: Key
 ): ((
-  a: { [key in Key]: number | string | boolean },
-  b: { [key in Key]: number | string | boolean }
+  a: { [key in Key]?: number | string | boolean | null },
+  b: { [key in Key]?: number | string | boolean | null }
 ) => number) => {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)

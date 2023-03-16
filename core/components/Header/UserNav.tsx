@@ -39,7 +39,6 @@ const UserNav = memo(() => {
     localServ.removeToken();
     toast('Đăng xuất thành công', {
       type: 'info',
-      autoClose: 2000,
       toastId: 'layout-logout',
     });
     mutate('user', undefined, false);

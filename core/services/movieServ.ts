@@ -7,7 +7,11 @@ import { urlConst } from '../constants/url.const';
 
 // import local library
 import { Moment } from 'moment';
-import { InterfaceMoviePagi } from '../interface/models/movie';
+import {
+  InterfaceMovieCreate,
+  InterfaceMoviePagi,
+  InterfaceMovieUpdate,
+} from '../interface/models/movie';
 
 const movieServ = {
   getMoviePagi: async (
@@ -19,6 +23,26 @@ const movieServ = {
     const end = toDate.format('YYYY-MM-DD');
     const url = `/LayDanhSachPhimPhanTrang?tenPhim=${tenPhim}&itemsPerPage=1000000&fromDate=${start}&toDate=${end}`;
     const { data } = await AXIOS_GENERATOR(urlConst.movie).get(url);
+    return data.content;
+  },
+  createMovie: async (phimInfo: InterfaceMovieCreate) => {
+    const { data } = await AXIOS_GENERATOR(urlConst.movie).post(
+      '/ThemPhim',
+      phimInfo
+    );
+    return data.content;
+  },
+  updateMovie: async (updateInfo: InterfaceMovieUpdate) => {
+    const { data } = await AXIOS_GENERATOR(urlConst.movie).put(
+      '/CapNhatPhim',
+      updateInfo
+    );
+    return data.content;
+  },
+  deleteMovie: async (maPhim: number) => {
+    const { data } = await AXIOS_GENERATOR(urlConst.movie).delete(
+      `/XoaPhim/${maPhim}`
+    );
     return data.content;
   },
 };

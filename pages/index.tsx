@@ -3,12 +3,16 @@ import { NextPageWithLayout } from './_app';
 
 // import types and interfaces
 import { Moment } from 'moment';
+import { InterfaceMovie } from '../core/interface/models/movie';
 
 // import local components
 import Layout from '../core/HOC/Layout';
 import SearchBar from '../core/components/Movie/List/SearchBar';
 import MovieTable from '../core/components/Movie/List/MovieTable';
-import MovieCreate from '../core/components/Movie/Form';
+import MovieForm from '../core/components/Movie/Form';
+
+// import local constants
+import { defaultMovieDetail } from '../core/constants/default.const';
 
 // import MUI components
 import Box from '@mui/material/Box';
@@ -19,7 +23,8 @@ const Home: NextPageWithLayout = () => {
   const tenPhimRef = useRef<HTMLInputElement | null>(null);
   const fromDateRef = useRef<Moment | null>(null);
   const toDateRef = useRef<Moment | null>(null);
-  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [movieFormOpen, setMovieFormOpen] = useState<boolean>(false);
+  const movieDetailRef = useRef<InterfaceMovie>(defaultMovieDetail);
 
   return (
     <Box component="div">
@@ -39,7 +44,8 @@ const Home: NextPageWithLayout = () => {
         <Button
           variant="contained"
           onClick={() => {
-            setDialogOpen(true);
+            movieDetailRef.current = defaultMovieDetail;
+            setMovieFormOpen(true);
           }}
         >
           Create movie
@@ -54,9 +60,14 @@ const Home: NextPageWithLayout = () => {
         tenPhimRef={tenPhimRef}
         fromDateRef={fromDateRef}
         toDateRef={toDateRef}
-        setDialogOpen={setDialogOpen}
+        setMovieFormOpen={setMovieFormOpen}
+        movieDetailRef={movieDetailRef}
       />
-      <MovieCreate dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} />
+      <MovieForm
+        movieFormOpen={movieFormOpen}
+        setMovieFormOpen={setMovieFormOpen}
+        movieDetail={movieDetailRef.current}
+      />
     </Box>
   );
 };

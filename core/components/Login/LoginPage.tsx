@@ -58,7 +58,6 @@ const LoginPage = ({ setLoading }: InterfaceLoginPageComponent) => {
       if (userInfo?.loaiNguoiDung === 'ADMIN') {
         toast('Đăng nhập thành công', {
           type: 'success',
-          autoClose: 2000,
           toastId: 'login-transition',
         });
         router.replace('/');
@@ -75,10 +74,10 @@ const LoginPage = ({ setLoading }: InterfaceLoginPageComponent) => {
         Array.isArray(message)
           ? message.forEach((mess) => {
               setTimeout(() => {
-                toast(mess, { type: 'error', autoClose: 2000 });
+                toast.error(mess);
               }, 500);
             })
-          : toast(message, { type: 'error', autoClose: 2000 });
+          : toast.error(message);
       } else {
         unknownErr();
       }

@@ -1,15 +1,15 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 
 // import local library
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import moment from 'moment';
 
 // import local services
 import movieServ from '../../../services/movieServ';
 
 // import interface and type
-import { Order } from 'core/interface/common/index.interface';
+import { AxiosErrorData, Order } from 'core/interface/common/index.interface';
 import { InterfaceMovie } from 'core/interface/models/movie';
 import { InterfaceMovieTableComponents } from 'core/interface/components/index.interface';
 
@@ -37,12 +37,16 @@ import TableRow from '@mui/material/TableRow';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import IconButton from '@mui/material/IconButton';
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import ConfirmModal from '../../Modal/ConfirmModal';
 
 const MovieTable = ({
   tenPhimRef,
   fromDateRef,
   toDateRef,
-  setDialogOpen,
+  setMovieFormOpen,
+  movieDetailRef,
 }: InterfaceMovieTableComponents) => {
   const router = useRouter();
   const [order, setOrder] = useState<Order>('asc');
@@ -50,8 +54,13 @@ const MovieTable = ({
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
+  const phimRef = useRef<{ maPhim: number; tenPhim: string }>({
+    maPhim: 0,
+    tenPhim: '',
+  });
 
-  const { data: moviePagi } = useSWR('movieList', () => {
+  const { data: moviePagi } = useSWR('moviePagi', () => {
     const tenPhim = tenPhimRef.current?.value ?? '';
     return movieServ.getMoviePagi(
       tenPhim,
@@ -63,6 +72,7 @@ const MovieTable = ({
   if (!moviePagi) return <div>...Loading</div>;
   const movieList = moviePagi.items;
 
+  // TABLE CONTEXT event handlers
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof InterfaceMovie
@@ -87,8 +97,14 @@ const MovieTable = ({
     setDense(event.target.checked);
   };
 
-  // Handle movie API
-  const handleTenPhimClick = (maPhim: number) => () => {
+  // MODAL event handler
+  const handleCloseConfirm = () => {
+    setConfirmOpen(false);
+  };
+
+  // MOVIE API event handlers
+  const handleTenPhimClick = (maPhim: number | undefined) => () => {
+    if (!maPhim) return;
     router.push(`/movie/${maPhim}`);
   };
 
@@ -100,8 +116,34 @@ const MovieTable = ({
     console.log(e.target.checked);
   };
 
-  const handleMovieEdit = () => {
-    setDialogOpen(true);
+  const handleMovieEditClick = (movieInfo: InterfaceMovie) => () => {
+    // console.log(movieInfo);
+    movieDetailRef.current = movieInfo;
+    setMovieFormOpen(true);
+  };
+
+  const handleDeleteClick = (maPhim: number, tenPhim: string) => () => {
+    phimRef.current = { maPhim, tenPhim };
+    setConfirmOpen(true);
+  };
+  const handleDeleteConfirm = () => {
+    movieServ
+      .deleteMovie(phimRef.current.maPhim)
+      .then(() => {
+        mutate('moviePagi');
+        toast.success('Xóa phim thành công');
+      })
+      .catch((err: AxiosError<AxiosErrorData>) => {
+        const mess = err.response?.data.message;
+        if (mess) {
+          toast.error(mess);
+        } else {
+          toast.error(err.message);
+        }
+      })
+      .finally(() => {
+        setConfirmOpen(false);
+      });
   };
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -110,7 +152,6 @@ const MovieTable = ({
 
   return (
     <Box sx={{ width: '100%' }}>
-      {/* <Paper sx={{ width: '100%', mb: 2, overflow: 'hidden' }}> */}
       <TableContainer sx={{ overflowX: 'inherit' }}>
         <Table
           aria-label="sticky table"
@@ -146,12 +187,12 @@ const MovieTable = ({
                       sx={{
                         cursor: 'pointer',
                         div: {
+                          fontWeight: 600,
                           transition: 'all 0.3s',
                         },
                         '&:hover': {
                           div: {
                             transform: 'scale(1.05)',
-                            fontWeight: 600,
                           },
                         },
                       }}
@@ -159,12 +200,14 @@ const MovieTable = ({
                       <div>{row.tenPhim}</div>
                     </TableCell>
                     <TableCell align="right">
-                      {moment(row.ngayKhoiChieu).format('DD/MM/YYYY')}
+                      {row.ngayKhoiChieu
+                        ? moment(row.ngayKhoiChieu).format('DD/MM/YYYY')
+                        : 'TBA'}
                     </TableCell>
                     <TableCell align="right">
                       <FormControl size="small">
                         <Select
-                          defaultValue={row.dangChieu.toString()}
+                          value={row.dangChieu.toString()}
                           onChange={handleSelectStatus}
                         >
                           <MenuItem value="true">Đang chiếu</MenuItem>
@@ -175,7 +218,7 @@ const MovieTable = ({
                     <TableCell align="right">
                       <Checkbox
                         color="primary"
-                        defaultChecked={row.hot}
+                        checked={row.hot ?? false}
                         onChange={handleCheckHot}
                       />
                     </TableCell>
@@ -191,11 +234,14 @@ const MovieTable = ({
                       >
                         <IconButton
                           color="editYellow"
-                          onClick={handleMovieEdit}
+                          onClick={handleMovieEditClick(row)}
                         >
                           <BorderColorIcon />
                         </IconButton>
-                        <IconButton color="error">
+                        <IconButton
+                          color="error"
+                          onClick={handleDeleteClick(row.maPhim!, row.tenPhim)}
+                        >
                           <DeleteOutlineIcon />
                         </IconButton>
                       </Box>
@@ -224,10 +270,20 @@ const MovieTable = ({
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      {/* </Paper> */}
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
+      />
+      <ConfirmModal
+        open={confirmOpen}
+        handleClose={handleCloseConfirm}
+        handleConfirm={handleDeleteConfirm}
+        confirmContent={
+          <span>
+            Bạn có chắc chắn muốn xóa phim{' '}
+            <span style={{ fontWeight: 600 }}>{phimRef.current.tenPhim}</span>?
+          </span>
+        }
       />
     </Box>
   );

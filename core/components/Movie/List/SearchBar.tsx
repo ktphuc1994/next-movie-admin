@@ -22,7 +22,7 @@ const SearchBar = memo(
       tenPhimRef.current ? (tenPhimRef.current.value = '') : null;
     };
     const handleSearch = () => {
-      mutate('movieList');
+      mutate('moviePagi');
     };
 
     return (

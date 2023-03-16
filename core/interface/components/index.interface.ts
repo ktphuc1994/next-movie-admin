@@ -3,6 +3,7 @@ import {
   MutableRefObject,
   ReactElement,
   SetStateAction,
+  ReactNode,
 } from 'react';
 
 // import types and interfaces
@@ -57,11 +58,19 @@ export interface InterfaceEnhancedTableHead extends InterfaceBaseProps {
 }
 
 export interface InterfaceMovieTableComponents extends InterfaceSearchBar {
-  setDialogOpen: Dispatch<SetStateAction<boolean>>;
+  setMovieFormOpen: Dispatch<SetStateAction<boolean>>;
+  movieDetailRef: MutableRefObject<InterfaceMovie>;
 }
 
 export interface InterfaceMovieFormComponents extends InterfaceBaseProps {
-  dialogOpen: boolean;
-  setDialogOpen: Dispatch<SetStateAction<boolean>>;
+  movieFormOpen: boolean;
+  setMovieFormOpen: Dispatch<SetStateAction<boolean>>;
   movieDetail?: InterfaceMovie;
+}
+
+export interface InterfaceConfirmModalComponents extends InterfaceBaseProps {
+  open: boolean;
+  handleClose: () => void;
+  handleConfirm: () => void;
+  confirmContent: ReactNode;
 }
