@@ -8,7 +8,8 @@ import { InterfaceHeader } from '../../interface/components/index.interface';
 import UserNav from './UserNav';
 
 // import MUI components
-import { Box, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 
@@ -21,9 +22,10 @@ const Header = memo(({ sideOpen, setSideOpen }: InterfaceHeader) => {
         alignItems: 'center',
         flexShrink: 0,
         my: '0.5rem',
+        mx: { xs: '-1rem', md: 0 },
       }}
     >
-      <div>
+      <Box component="div" sx={{ display: 'flex', alignItems: 'center' }}>
         {sideOpen ? null : (
           <IconButton
             onClick={() => {
@@ -31,6 +33,7 @@ const Header = memo(({ sideOpen, setSideOpen }: InterfaceHeader) => {
             }}
             sx={{
               display: { xs: 'inline-flex', md: 'none' },
+              mr: '0.5rem',
             }}
           >
             <MenuIcon />
@@ -57,7 +60,7 @@ const Header = memo(({ sideOpen, setSideOpen }: InterfaceHeader) => {
             MOVIE
           </Typography>
         </Link>
-      </div>
+      </Box>
       <Box component="div">
         <UserNav />
       </Box>

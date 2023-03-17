@@ -6,27 +6,37 @@ import Head from 'next/head';
 // import local library
 import useSWR from 'swr';
 
+// import local hooks
+import { useCommonContext } from 'core/context/CommonContext';
+
 // import local service
-import userServ from '../../core/services/userServ';
+import userServ from 'core/services/userServ';
 
 // import local components
-import LoginPage from '../../core/components/Login/LoginPage';
-import AlreadyLogin from '../../core/components/Login/AlreadyLogin';
-import { ScreenSpinner } from '../../core/components/Spinner/ScreenSpinner';
-import InnerSpinner from '../../core/components/Spinner/InnerSpinner';
+import LoginPage from 'core/components/Login/LoginPage';
+import AlreadyLogin from 'core/components/Login/AlreadyLogin';
+import { ScreenSpinner } from 'core/components/Spinner/ScreenSpinner';
+import InnerSpinner from 'core/components/Spinner/InnerSpinner';
 
 // import type and interface
-import { InterfaceUser } from '../../core/interface/models/user';
+import { InterfaceUser } from 'core/interface/models/user';
+import { InterfaceCommonContext } from 'core/context/interface/common.interface';
 
 // import MUI Components
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 
 const Login = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const { setUser } = useCommonContext() as InterfaceCommonContext;
 
   const { data: userInfo, isLoading } = useSWR<InterfaceUser>(
     'user',
-    userServ.getUserInfo
+    userServ.getUserInfo,
+    {
+      onSuccess: (data) => {
+        setUser(data);
+      },
+    }
   );
 
   return (

@@ -22,17 +22,17 @@ import StyledTextField, { inputStyle } from '../Styled/StyledTextField';
 import { unknownErr } from '../../utilities';
 
 // import MUI components
-import {
-  Box,
-  Typography,
-  InputLabel,
-  OutlinedInput,
-  InputAdornment,
-  IconButton,
-  FormControl,
-  Button,
-} from '@mui/material';
-import { LockPerson, Visibility, VisibilityOff } from '@mui/icons-material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import InputLabel from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import FormControl from '@mui/material/FormControl';
+import Button from '@mui/material/Button';
+import LockPerson from '@mui/icons-material/LockPerson';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const LoginPage = ({ setLoading }: InterfaceLoginPageComponent) => {
   const router = useRouter();
@@ -58,7 +58,6 @@ const LoginPage = ({ setLoading }: InterfaceLoginPageComponent) => {
       if (userInfo?.loaiNguoiDung === 'ADMIN') {
         toast('Đăng nhập thành công', {
           type: 'success',
-          autoClose: 2000,
           toastId: 'login-transition',
         });
         router.replace('/');
@@ -75,10 +74,10 @@ const LoginPage = ({ setLoading }: InterfaceLoginPageComponent) => {
         Array.isArray(message)
           ? message.forEach((mess) => {
               setTimeout(() => {
-                toast(mess, { type: 'error', autoClose: 2000 });
+                toast.error(mess);
               }, 500);
             })
-          : toast(message, { type: 'error', autoClose: 2000 });
+          : toast.error(message);
       } else {
         unknownErr();
       }

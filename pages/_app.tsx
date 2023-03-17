@@ -45,7 +45,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           </SWRConfig>
         </ThemeProvider>
       </LocalizationProvider>
-      <ToastContainer />
+      <ToastContainer autoClose={2000} />
     </>
   );
 }

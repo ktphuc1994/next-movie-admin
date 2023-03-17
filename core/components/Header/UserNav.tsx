@@ -6,21 +6,23 @@ import useSWR, { mutate } from 'swr';
 
 // import type and interface
 import { InterfaceUser } from '../../interface/models/user';
+import { InterfaceCommonContext } from '../../context/interface/common.interface';
+
+// import local hooks
+import { useCommonContext } from '../../context/CommonContext';
 
 // import local service
 import localServ from '../../services/localServ';
 
 // import MUI components
-import {
-  Box,
-  Avatar,
-  Button,
-  Divider,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-} from '@mui/material';
-import { Logout } from '@mui/icons-material';
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 // import local components
 import InnerSpinner from '../Spinner/InnerSpinner';
@@ -28,7 +30,7 @@ import { toast } from 'react-toastify';
 
 const UserNav = memo(() => {
   const router = useRouter();
-  const { data: userInfo } = useSWR<InterfaceUser>('user');
+  const { user: userInfo } = useCommonContext() as InterfaceCommonContext;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -41,7 +43,6 @@ const UserNav = memo(() => {
     localServ.removeToken();
     toast('Đăng xuất thành công', {
       type: 'info',
-      autoClose: 2000,
       toastId: 'layout-logout',
     });
     mutate('user', undefined, false);
@@ -91,7 +92,7 @@ const UserNav = memo(() => {
         <Divider />
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
-            <Logout fontSize="small" />
+            <LogoutIcon fontSize="small" />
           </ListItemIcon>
           Logout
         </MenuItem>

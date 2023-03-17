@@ -2,7 +2,9 @@ import { memo } from 'react';
 
 // import MUI components
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
-import { Box, Divider, IconButton } from '@mui/material';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
 import MuiDrawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';

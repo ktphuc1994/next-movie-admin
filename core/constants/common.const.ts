@@ -20,7 +20,7 @@ export const commonConst: InterfaceCommonConst = {
   ],
   loginRejectedError: [401, 500],
   defaultDate: {
-    start: moment().subtract(2, 'years'),
-    end: moment().add(1, 'years'),
+    start: moment('1970-01-01'),
+    end: moment('2070-01-01'),
   },
 };

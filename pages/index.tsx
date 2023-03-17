@@ -1,98 +1,77 @@
-import { ReactElement, useRef } from 'react';
+import { ReactElement, useRef, useState } from 'react';
 import { NextPageWithLayout } from './_app';
-
-// import local service
-import movieServ from '../core/services/movieServ';
-
-// import local library
-import useSWR, { mutate } from 'swr';
 
 // import types and interfaces
 import { Moment } from 'moment';
+import { InterfaceMovie } from '../core/interface/models/movie';
 
 // import local components
 import Layout from '../core/HOC/Layout';
+import SearchBar from '../core/components/Movie/List/SearchBar';
+import MovieTable from '../core/components/Movie/List/MovieTable';
+import MovieForm from '../core/components/Movie/Form';
+
+// import local constants
+import { defaultMovieDetail } from '../core/constants/default.const';
 
 // import MUI components
-import {
-  Box,
-  Button,
-  IconButton,
-  InputAdornment,
-  TextField,
-} from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 const Home: NextPageWithLayout = () => {
   const tenPhimRef = useRef<HTMLInputElement | null>(null);
   const fromDateRef = useRef<Moment | null>(null);
   const toDateRef = useRef<Moment | null>(null);
-  const { data } = useSWR('movieList', () => {
-    const tenPhim = tenPhimRef.current?.value ?? '';
-    return movieServ.getMoviePagi(
-      tenPhim,
-      fromDateRef.current ?? undefined,
-      toDateRef.current ?? undefined
-    );
-  });
-
-  console.log({ data });
-
-  const handleSearch = () => {
-    mutate('movieList');
-  };
-  const handleResetTenPhim = () => {
-    tenPhimRef.current ? (tenPhimRef.current.value = '') : null;
-  };
+  const [movieFormOpen, setMovieFormOpen] = useState<boolean>(false);
+  const movieDetailRef = useRef<InterfaceMovie>(defaultMovieDetail);
 
   return (
-    <Box component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-      <TextField
-        size="small"
-        margin="none"
-        id="tenPhimInput"
-        label="Tên phim"
-        name="tenPhim"
-        type="text"
-        defaultValue=""
-        inputRef={tenPhimRef}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="tenPhim-reset"
-                onClick={handleResetTenPhim}
-                edge="end"
-              >
-                <ClearIcon fontSize="small" />
-              </IconButton>
-            </InputAdornment>
-          ),
+    <Box
+      component="div"
+      sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+    >
+      <Box
+        component="div"
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mx: '1rem',
+          mb: '1rem',
+          flexShrink: 0,
         }}
+      >
+        <Typography component="h1" fontSize="2rem" fontWeight="bold">
+          Danh sách phim
+        </Typography>
+        <Button
+          variant="contained"
+          onClick={() => {
+            movieDetailRef.current = defaultMovieDetail;
+            setMovieFormOpen(true);
+          }}
+        >
+          Thêm phim
+        </Button>
+      </Box>
+      <SearchBar
+        tenPhimRef={tenPhimRef}
+        fromDateRef={fromDateRef}
+        toDateRef={toDateRef}
       />
-      <DatePicker
-        label="Từ ngày"
-        format="DD/MM/YYYY"
-        slotProps={{ textField: { size: 'small' } }}
-        onChange={(newValue: Moment | null) => {
-          fromDateRef.current = newValue;
-        }}
+      <MovieTable
+        tenPhimRef={tenPhimRef}
+        fromDateRef={fromDateRef}
+        toDateRef={toDateRef}
+        setMovieFormOpen={setMovieFormOpen}
+        movieDetailRef={movieDetailRef}
       />
-      <DatePicker
-        label="Đến ngày"
-        format="DD/MM/YYYY"
-        slotProps={{
-          textField: { size: 'small' },
-          actionBar: { actions: ['clear'] },
-        }}
-        onChange={(newValue: Moment | null) => {
-          toDateRef.current = newValue;
-        }}
+      <MovieForm
+        movieFormOpen={movieFormOpen}
+        setMovieFormOpen={setMovieFormOpen}
+        movieDetail={movieDetailRef.current}
       />
-      <Button variant="contained" onClick={handleSearch}>
-        Search
-      </Button>
     </Box>
   );
 };
