@@ -9,14 +9,17 @@ import {
   useState,
 } from 'react';
 
+// import local library
+import { mutate } from 'swr';
+import { toast } from 'react-toastify';
+import moment, { Moment } from 'moment';
+
 // import types and interfaces
 import {
   InterfaceMovieCreate,
   InterfaceMovieUpdate,
 } from 'core/interface/models/movie';
 import { InterfaceMovieFormComponents } from 'core/interface/components/index.interface';
-import { AxiosError } from 'axios';
-import { AxiosErrorData } from 'core/interface/common/index.interface';
 
 // import local constants
 import {
@@ -27,10 +30,8 @@ import {
 // import local service
 import movieServ from 'core/services/movieServ';
 
-// import local library
-import { mutate } from 'swr';
-import { toast } from 'react-toastify';
-import moment, { Moment } from 'moment';
+// import local utilities
+import { axiosErrorHandling } from 'core/utilities';
 
 // import MUI Components
 import Box from '@mui/material/Box';
@@ -63,6 +64,14 @@ const Transition = forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const handleDanhGiaKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+  if (event.key === 'Enter') {
+    // Prevent's default 'Enter' behavior.
+    event.preventDefault();
+    // handler code if any
+  }
+};
+
 const MovieForm = memo(
   ({
     movieFormOpen,
@@ -74,13 +83,6 @@ const MovieForm = memo(
 
     const handleClose = () => {
       setMovieFormOpen(false);
-    };
-    const handleDanhGiaKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === 'Enter') {
-        // Prevent's default 'Enter' behavior.
-        event.preventDefault();
-        // your handler code
-      }
     };
 
     const handleMovieMutate = (
@@ -96,20 +98,7 @@ const MovieForm = memo(
           });
           setMovieFormOpen(false);
         })
-        .catch((err: AxiosError<AxiosErrorData>) => {
-          if (err.response) {
-            const message = err.response.data.message;
-            Array.isArray(message)
-              ? message.forEach((mess) => {
-                  setTimeout(() => {
-                    toast.error(mess);
-                  }, 500);
-                })
-              : toast.error(message);
-          } else {
-            toast.error(err.message);
-          }
-        })
+        .catch(axiosErrorHandling)
         .finally(() => {
           setButtonLoading(false);
         });
@@ -120,7 +109,6 @@ const MovieForm = memo(
       setButtonLoading(true);
       const formData = new FormData(e.currentTarget);
 
-      console.log(Object.fromEntries(formData.entries()));
       let newFormData = [];
       for (const [key, value] of formData.entries()) {
         switch (key) {
@@ -159,8 +147,6 @@ const MovieForm = memo(
       } else {
         method = 'createMovie';
       }
-
-      console.log('Form data: ', formJson);
 
       handleMovieMutate(method, formJson);
     };

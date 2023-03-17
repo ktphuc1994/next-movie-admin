@@ -6,8 +6,11 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+
+// import MUI Icons
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import ArticleIcon from '@mui/icons-material/Article';
+import GroupIcon from '@mui/icons-material/Group';
 
 // import local context
 import { useCommonContext } from '../../context/CommonContext';
@@ -25,6 +28,12 @@ const itemList = [
     icon: <ArticleIcon />,
     pathname: '/movie/[id]',
     path: '/movie/',
+  },
+  {
+    name: 'User Management',
+    icon: <GroupIcon />,
+    pathname: '/user-management',
+    path: '/user-management',
   },
 ];
 

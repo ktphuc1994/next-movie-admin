@@ -1,5 +1,6 @@
+import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
-import { Order } from '../interface/common/index.interface';
+import { AxiosErrorData, Order } from '../interface/common/index.interface';
 
 const unknownErr = () => {
   toast.error('Lỗi không xác định. Vui lòng thử lại sau.');
@@ -40,5 +41,20 @@ const getComparator = <Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 };
 
-export { unknownErr, collator, getComparator };
+const axiosErrorHandling = (err: AxiosError<AxiosErrorData>) => {
+  if (err.response) {
+    const message = err.response.data.message;
+    Array.isArray(message)
+      ? message.forEach((mess) => {
+          setTimeout(() => {
+            toast.error(mess);
+          }, 500);
+        })
+      : toast.error(message);
+  } else {
+    toast.error(err.message);
+  }
+};
+
+export { unknownErr, collator, getComparator, axiosErrorHandling };
 export type { TypeEquals };

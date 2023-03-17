@@ -28,7 +28,12 @@ const SearchBar = memo(
     return (
       <Box
         component="div"
-        sx={{ display: 'flex', alignItems: 'center', mb: '1rem' }}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          mb: '1rem',
+          flexShrink: 0,
+        }}
       >
         <TextField
           size="small"
@@ -77,7 +82,7 @@ const SearchBar = memo(
           }}
         />
         <Button variant="contained" onClick={handleSearch} sx={{ ml: '1rem' }}>
-          Search
+          Tìm
         </Button>
       </Box>
     );

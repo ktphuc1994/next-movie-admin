@@ -5,10 +5,14 @@ import Head from 'next/head';
 import useSWR from 'swr';
 import { toast } from 'react-toastify';
 
+// import local hooks
+import { useCommonContext } from '../context/CommonContext';
+
 // import local type and interface
 import { AxiosError } from 'axios';
 import { InterfaceUser } from '../interface/models/user';
 import { InterfaceLayout } from './interface/HOC.interface';
+import { InterfaceCommonContext } from '../context/interface/common.interface';
 
 // import local service
 import userServ from '../services/userServ';
@@ -36,11 +40,16 @@ const Layout = ({
   const [modalOpen, setModalOpen] = useState(false);
   const [sideOpen, setSideOpen] = useState(false);
   const [errMess, setErrMess] = useState('');
+  const { setUser } = useCommonContext() as InterfaceCommonContext;
 
   const { data: userInfo, error: userErr } = useSWR<
     InterfaceUser,
     AxiosError<{ error: string; message: string }>
-  >('user', userServ.getUserInfo);
+  >('user', userServ.getUserInfo, {
+    onSuccess: (data) => {
+      setUser(data);
+    },
+  });
 
   useEffect(() => {
     if (userErr) {
@@ -74,11 +83,7 @@ const Layout = ({
       );
       setModalOpen(true);
     }
-    // console.log('useEffect');
   }, [userInfo, userErr]);
-
-  // console.log('userErr & userInfo: ', { userErr, userInfo });
-  // console.log('Layout');
 
   return (
     <>
@@ -110,7 +115,6 @@ const Layout = ({
             ) : (
               <InnerSpinner size="4rem" thickness={4} />
             )}
-            {/* {children} */}
           </Box>
           <Footer />
         </Box>

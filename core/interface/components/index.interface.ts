@@ -10,6 +10,7 @@ import {
 import { Moment } from 'moment';
 import { InterfaceMovie } from '../models/movie';
 import { Order } from '../common/index.interface';
+import { CircularProgressProps } from '@mui/material/CircularProgress';
 
 export interface InterfaceBaseProps {
   className?: string;
@@ -17,9 +18,9 @@ export interface InterfaceBaseProps {
 }
 
 // Spinner
-export interface InterfaceInnerSpinner extends InterfaceBaseProps {
-  size?: string;
-  thickness?: number;
+export interface InterfaceInnerSpinner extends CircularProgressProps {
+  disableAbsolute?: boolean;
+  bgColor?: string;
 }
 
 // Login

@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from 'react';
+import { InterfaceUser } from '../interface/models/user';
 
 // import local interface
 import { InterfaceCommonContext } from './interface/common.interface';
@@ -7,8 +8,9 @@ const CommonContext = createContext<InterfaceCommonContext | null>(null);
 
 const CommonProvider = ({ children }: { children: ReactNode }) => {
   const [moviePath, setMoviePath] = useState<string | null>(null);
+  const [user, setUser] = useState<InterfaceUser | undefined>(undefined);
   return (
-    <CommonContext.Provider value={{ moviePath, setMoviePath }}>
+    <CommonContext.Provider value={{ moviePath, setMoviePath, user, setUser }}>
       {children}
     </CommonContext.Provider>
   );

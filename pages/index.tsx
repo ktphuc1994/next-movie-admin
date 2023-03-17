@@ -27,7 +27,10 @@ const Home: NextPageWithLayout = () => {
   const movieDetailRef = useRef<InterfaceMovie>(defaultMovieDetail);
 
   return (
-    <Box component="div">
+    <Box
+      component="div"
+      sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+    >
       <Box
         component="div"
         sx={{
@@ -36,10 +39,11 @@ const Home: NextPageWithLayout = () => {
           alignItems: 'center',
           mx: '1rem',
           mb: '1rem',
+          flexShrink: 0,
         }}
       >
         <Typography component="h1" fontSize="2rem" fontWeight="bold">
-          Movie List
+          Danh sách phim
         </Typography>
         <Button
           variant="contained"
@@ -48,7 +52,7 @@ const Home: NextPageWithLayout = () => {
             setMovieFormOpen(true);
           }}
         >
-          Create movie
+          Thêm phim
         </Button>
       </Box>
       <SearchBar

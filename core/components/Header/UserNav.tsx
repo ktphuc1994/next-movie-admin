@@ -6,6 +6,10 @@ import useSWR, { mutate } from 'swr';
 
 // import type and interface
 import { InterfaceUser } from '../../interface/models/user';
+import { InterfaceCommonContext } from '../../context/interface/common.interface';
+
+// import local hooks
+import { useCommonContext } from '../../context/CommonContext';
 
 // import local service
 import localServ from '../../services/localServ';
@@ -26,7 +30,7 @@ import { toast } from 'react-toastify';
 
 const UserNav = memo(() => {
   const router = useRouter();
-  const { data: userInfo } = useSWR<InterfaceUser>('user');
+  const { user: userInfo } = useCommonContext() as InterfaceCommonContext;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: MouseEvent<HTMLElement>) => {

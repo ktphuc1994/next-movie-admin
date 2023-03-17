@@ -4,20 +4,27 @@ import { useRouter } from 'next/router';
 // import local library
 import useSWR, { mutate } from 'swr';
 import moment from 'moment';
+import { toast } from 'react-toastify';
 
 // import local services
-import movieServ from '../../../services/movieServ';
+import movieServ from 'core/services/movieServ';
 
 // import interface and type
+import { AxiosError } from 'axios';
 import { AxiosErrorData, Order } from 'core/interface/common/index.interface';
-import { InterfaceMovie } from 'core/interface/models/movie';
+import {
+  InterfaceMovie,
+  InterfaceMovieUpdate,
+} from 'core/interface/models/movie';
 import { InterfaceMovieTableComponents } from 'core/interface/components/index.interface';
 
 // import local components
 import EnhancedTableHead from './TableHead';
+import ConfirmModal from '../../Modal/ConfirmModal';
+import InnerSpinner from '../../Spinner/InnerSpinner';
 
 // import local utils
-import { getComparator } from 'core/utilities';
+import { axiosErrorHandling, getComparator } from 'core/utilities';
 
 // import MUI components
 import Box from '@mui/material/Box';
@@ -37,9 +44,16 @@ import TableRow from '@mui/material/TableRow';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import IconButton from '@mui/material/IconButton';
-import { toast } from 'react-toastify';
-import { AxiosError } from 'axios';
-import ConfirmModal from '../../Modal/ConfirmModal';
+
+const TableLoading = ({ bgColor }: { bgColor?: string }) => (
+  <InnerSpinner
+    color="error"
+    size="3rem"
+    thickness={4}
+    disableAbsolute={false}
+    bgColor={bgColor}
+  />
+);
 
 const MovieTable = ({
   tenPhimRef,
@@ -60,7 +74,7 @@ const MovieTable = ({
     tenPhim: '',
   });
 
-  const { data: moviePagi } = useSWR('moviePagi', () => {
+  const { data: moviePagi, isValidating } = useSWR('moviePagi', () => {
     const tenPhim = tenPhimRef.current?.value ?? '';
     return movieServ.getMoviePagi(
       tenPhim,
@@ -68,8 +82,13 @@ const MovieTable = ({
       toDateRef.current ?? undefined
     );
   });
+  if (!moviePagi)
+    return (
+      <Box component="div" sx={{ flexGrow: 1, position: 'relative' }}>
+        <TableLoading />
+      </Box>
+    );
 
-  if (!moviePagi) return <div>...Loading</div>;
   const movieList = moviePagi.items;
 
   // TABLE CONTEXT event handlers
@@ -108,13 +127,30 @@ const MovieTable = ({
     router.push(`/movie/${maPhim}`);
   };
 
-  const handleSelectStatus = (e: SelectChangeEvent) => {
-    console.log(e);
+  const handleMovieUpdate = (updateInfo: InterfaceMovieUpdate) => {
+    movieServ
+      .updateMovie(updateInfo)
+      .then(() => {
+        mutate('moviePagi');
+        toast.success('Cập nhật thành công');
+      })
+      .catch(axiosErrorHandling);
   };
-
-  const handleCheckHot = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.checked);
-  };
+  const handleChangeTinhTrang =
+    (maPhim: number | undefined) => (e: SelectChangeEvent) => {
+      // console.log(e.target);
+      if (!maPhim) return;
+      const dangChieu = e.target.value === 'true' ? true : false;
+      const sapChieu = !dangChieu;
+      handleMovieUpdate({ maPhim, dangChieu, sapChieu });
+    };
+  const handleCheckHot =
+    (maPhim: number | undefined) => (e: ChangeEvent<HTMLInputElement>) => {
+      // console.log(e.target);
+      if (!maPhim) return;
+      const hot = e.target.checked;
+      handleMovieUpdate({ maPhim, hot });
+    };
 
   const handleMovieEditClick = (movieInfo: InterfaceMovie) => () => {
     // console.log(movieInfo);
@@ -151,8 +187,14 @@ const MovieTable = ({
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - movieList.length) : 0;
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <TableContainer sx={{ overflowX: 'inherit' }}>
+    <Box sx={{ width: '100%', flexGrow: 1, position: 'relative' }}>
+      <TableContainer
+        sx={{
+          // overflowX: 'inherit',
+          position: 'relative',
+        }}
+      >
+        {isValidating ? <TableLoading bgColor="rgba(0, 0, 0, 0.15)" /> : null}
         <Table
           aria-label="sticky table"
           aria-labelledby="tableTitle"
@@ -207,8 +249,9 @@ const MovieTable = ({
                     <TableCell align="right">
                       <FormControl size="small">
                         <Select
+                          name="dangChieu"
                           value={row.dangChieu.toString()}
-                          onChange={handleSelectStatus}
+                          onChange={handleChangeTinhTrang(row.maPhim)}
                         >
                           <MenuItem value="true">Đang chiếu</MenuItem>
                           <MenuItem value="false">Sắp chiếu</MenuItem>
@@ -217,9 +260,10 @@ const MovieTable = ({
                     </TableCell>
                     <TableCell align="right">
                       <Checkbox
+                        name="hot"
                         color="primary"
                         checked={row.hot ?? false}
-                        onChange={handleCheckHot}
+                        onChange={handleCheckHot(row.maPhim)}
                       />
                     </TableCell>
                     <TableCell align="right">{row.danhGia}</TableCell>
@@ -266,13 +310,14 @@ const MovieTable = ({
         component="div"
         count={movieList.length}
         rowsPerPage={rowsPerPage}
+        labelRowsPerPage="Số dòng trên trang"
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
+        label="Padding mỏng"
       />
       <ConfirmModal
         open={confirmOpen}
