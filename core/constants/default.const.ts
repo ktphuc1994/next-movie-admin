@@ -1,3 +1,4 @@
+import { HeadCell } from '../interface/components/index.interface';
 import { InterfaceMovie } from '../interface/models/movie';
 
 export const danhGiaOption: string[] = [
@@ -25,3 +26,28 @@ export const defaultMovieDetail: InterfaceMovie = {
   dangChieu: false,
   sapChieu: true,
 };
+
+export const headCells: readonly HeadCell[] = [
+  { id: 'maPhim', cellAlign: 'left', label: 'Mã phim' },
+  {
+    id: 'tenPhim',
+    cellAlign: 'left',
+    label: 'Tên phim',
+  },
+  {
+    id: 'ngayKhoiChieu',
+    cellAlign: 'right',
+    label: 'Ngày khởi chiếu',
+  },
+  {
+    id: 'dangChieu',
+    cellAlign: 'right',
+    label: 'Tình trạng',
+  },
+  { id: 'hot', cellAlign: 'right', label: 'Hot' },
+  {
+    id: 'danhGia',
+    cellAlign: 'right',
+    label: 'Đánh giá',
+  },
+];

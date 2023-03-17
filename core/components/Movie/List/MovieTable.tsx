@@ -6,6 +6,9 @@ import useSWR, { mutate } from 'swr';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 
+// import local hooks
+import { useCommonContext } from 'core/context/CommonContext';
+
 // import local services
 import movieServ from 'core/services/movieServ';
 
@@ -17,6 +20,7 @@ import {
   InterfaceMovieUpdate,
 } from 'core/interface/models/movie';
 import { InterfaceMovieTableComponents } from 'core/interface/components/index.interface';
+import { InterfaceCommonContext } from 'core/context/interface/common.interface';
 
 // import local components
 import EnhancedTableHead from './TableHead';
@@ -25,6 +29,9 @@ import InnerSpinner from '../../Spinner/InnerSpinner';
 
 // import local utils
 import { axiosErrorHandling, getComparator } from 'core/utilities';
+
+// import local constants
+import { headCells } from 'core/constants/default.const';
 
 // import MUI components
 import Box from '@mui/material/Box';
@@ -63,6 +70,7 @@ const MovieTable = ({
   movieDetailRef,
 }: InterfaceMovieTableComponents) => {
   const router = useRouter();
+  const { setMoviePath } = useCommonContext() as InterfaceCommonContext;
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof InterfaceMovie>('ngayKhoiChieu');
   const [page, setPage] = useState(0);
@@ -124,6 +132,7 @@ const MovieTable = ({
   // MOVIE API event handlers
   const handleTenPhimClick = (maPhim: number | undefined) => () => {
     if (!maPhim) return;
+    setMoviePath(`/movie/${maPhim}`);
     router.push(`/movie/${maPhim}`);
   };
 
@@ -202,6 +211,7 @@ const MovieTable = ({
           sx={{ minWidth: 750 }}
         >
           <EnhancedTableHead
+            headCells={headCells}
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}

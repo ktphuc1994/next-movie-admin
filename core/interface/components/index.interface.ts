@@ -56,6 +56,7 @@ export interface InterfaceEnhancedTableHead extends InterfaceBaseProps {
     event: React.MouseEvent<unknown>,
     property: keyof InterfaceMovie
   ) => void;
+  headCells: readonly HeadCell[];
 }
 
 export interface InterfaceMovieTableComponents extends InterfaceSearchBar {

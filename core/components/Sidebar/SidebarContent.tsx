@@ -21,19 +21,16 @@ const itemList = [
     name: 'Movie list',
     icon: <DashboardCustomizeIcon />,
     pathname: '/',
-    path: '/',
   },
   {
     name: 'Movie Detail',
     icon: <ArticleIcon />,
     pathname: '/movie/[id]',
-    path: '/movie/',
   },
   {
     name: 'User Management',
     icon: <GroupIcon />,
     pathname: '/user-management',
-    path: '/user-management',
   },
 ];
 
@@ -45,7 +42,7 @@ const SidebarContent = ({ open }: { open: boolean }) => {
     <List>
       {itemList.map((item) => {
         const isMovieDetail = item.pathname === '/movie/[id]';
-        const toPath = isMovieDetail ? item.path + moviePath : item.path;
+        const toPath = isMovieDetail && moviePath ? moviePath : item.pathname;
         return (
           <ListItem key={item.name} disablePadding sx={{ display: 'block' }}>
             <ListItemButton

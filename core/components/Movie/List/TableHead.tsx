@@ -1,8 +1,5 @@
 // import types and interfaces
-import {
-  HeadCell,
-  InterfaceEnhancedTableHead,
-} from 'core/interface/components/index.interface';
+import { InterfaceEnhancedTableHead } from 'core/interface/components/index.interface';
 import { InterfaceMovie } from 'core/interface/models/movie';
 
 // import MUI components
@@ -13,32 +10,8 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import visuallyHidden from '@mui/utils/visuallyHidden';
 
-const headCells: readonly HeadCell[] = [
-  { id: 'maPhim', cellAlign: 'left', label: 'Mã phim' },
-  {
-    id: 'tenPhim',
-    cellAlign: 'left',
-    label: 'Tên phim',
-  },
-  {
-    id: 'ngayKhoiChieu',
-    cellAlign: 'right',
-    label: 'Ngày khởi chiếu',
-  },
-  {
-    id: 'dangChieu',
-    cellAlign: 'right',
-    label: 'Tình trạng',
-  },
-  { id: 'hot', cellAlign: 'right', label: 'Hot' },
-  {
-    id: 'danhGia',
-    cellAlign: 'right',
-    label: 'Đánh giá',
-  },
-];
-
 const EnhancedTableHead = ({
+  headCells,
   order,
   orderBy,
   onRequestSort,

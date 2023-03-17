@@ -1,5 +1,11 @@
 import { ReactElement } from 'react';
+
+// import next
+import { useRouter } from 'next/router';
 import { NextPageWithLayout } from '../_app';
+
+// import local library
+import useSWR from 'swr';
 
 // import local components
 import Layout from '../../core/HOC/Layout';
@@ -8,8 +14,20 @@ import Layout from '../../core/HOC/Layout';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import theaterServ from '../../core/services/theaterServ';
 
 const MovieAndSchedule: NextPageWithLayout = () => {
+  const router = useRouter();
+
+  const maPhim = router.query.id as string;
+  const { data: movieSchedule } = useSWR(
+    'movie-schedule',
+    theaterServ.getMovieSchedule(maPhim)
+  );
+
+  const heThongRap = movieSchedule?.heThongRap;
+  console.log(heThongRap);
+
   return (
     <Box
       component="div"
