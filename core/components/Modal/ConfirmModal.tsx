@@ -1,5 +1,5 @@
 // import types and interfaces
-import { InterfaceConfirmModalComponents } from '../../interface/components/index.interface';
+import { InterfaceConfirmModalComponents } from '../../interface/components/movieList.interface';
 
 // import MUI components
 import Dialog from '@mui/material/Dialog';

@@ -19,7 +19,7 @@ import {
   InterfaceMovieCreate,
   InterfaceMovieUpdate,
 } from 'core/interface/models/movie';
-import { InterfaceMovieFormComponents } from 'core/interface/components/index.interface';
+import { InterfaceMovieFormComponents } from 'core/interface/components/movieList.interface';
 
 // import local constants
 import {

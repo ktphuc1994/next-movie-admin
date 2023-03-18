@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 // import types and interfaces
 import { Moment } from 'moment';
-import { InterfaceSearchBar } from 'core/interface/components/index.interface';
+import { InterfaceSearchBar } from 'core/interface/components/movieList.interface';
 
 // import local library
 import { mutate } from 'swr';

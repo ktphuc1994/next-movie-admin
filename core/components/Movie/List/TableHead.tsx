@@ -1,6 +1,5 @@
 // import types and interfaces
-import { InterfaceEnhancedTableHead } from 'core/interface/components/index.interface';
-import { InterfaceMovie } from 'core/interface/models/movie';
+import { InterfaceEnhancedTableHead } from 'core/interface/components/table.interface';
 
 // import MUI components
 import Box from '@mui/material/Box';
@@ -10,14 +9,14 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import visuallyHidden from '@mui/utils/visuallyHidden';
 
-const EnhancedTableHead = ({
+const EnhancedTableHead = <T,>({
   headCells,
   order,
   orderBy,
   onRequestSort,
-}: InterfaceEnhancedTableHead) => {
+}: InterfaceEnhancedTableHead<T>) => {
   const createSortHandler =
-    (property: keyof InterfaceMovie) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof T) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 
@@ -26,7 +25,7 @@ const EnhancedTableHead = ({
       <TableRow sx={{ backgroundColor: 'lightgray' }}>
         {headCells.map((headCell) => (
           <TableCell
-            key={headCell.id}
+            key={headCell.id as string | number}
             align={headCell.cellAlign}
             sortDirection={orderBy === headCell.id ? order : false}
             sx={{ fontSize: '1rem' }}

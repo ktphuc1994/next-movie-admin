@@ -11,3 +11,17 @@ export interface InterfaceLichChieu {
 export interface InterfaceMovieSchedule extends InterfaceMovie {
   heThongRap: InterfaceHeThongRap[];
 }
+
+export interface InterfaceScheduleTableHead {
+  maLichChieu: number;
+  maHeThongRap: string;
+  maCumRap: string;
+  maRap: number;
+  ngayGioChieu: string;
+}
+
+export interface InterfaceFlattenSchedule extends InterfaceScheduleTableHead {
+  tenHeThongRap: string;
+  tenCumRap: string;
+  tenRap: string;
+}
