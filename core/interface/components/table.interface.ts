@@ -5,6 +5,7 @@ export interface HeadCell<T> {
   id: keyof T;
   label: string;
   cellAlign: 'center' | 'left' | 'right' | 'inherit' | 'justify';
+  filter?: boolean;
 }
 
 export interface InterfaceEnhancedTableHead<T> extends InterfaceBaseProps {

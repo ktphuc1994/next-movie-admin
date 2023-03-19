@@ -295,7 +295,7 @@ const MovieTable = ({
             {emptyRows > 0 && (
               <TableRow
                 style={{
-                  height: (dense ? 33 : 53) * emptyRows,
+                  height: (dense ? 53 : 73) * emptyRows,
                 }}
               >
                 <TableCell colSpan={7} />

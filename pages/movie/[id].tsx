@@ -59,23 +59,28 @@ const MovieAndSchedule: NextPageWithLayout = () => {
       sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
     >
       <Box
-        component="div"
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
           mx: '1rem',
           mb: '1rem',
           flexShrink: 0,
         }}
       >
-        <Typography component="h2" fontSize="2rem" fontWeight="bold">
-          Lịch chiếu phim
-        </Typography>
-        <Typography component="h3" fontSize="1.5rem">
+        <Box
+          component="div"
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography component="h2" fontSize="2rem" fontWeight="bold">
+            Lịch chiếu phim
+          </Typography>
+          <Button variant="contained">Tạo lịch chiếu</Button>
+        </Box>
+        <Typography component="h3" fontSize="1.3rem">
           {movieSchedule?.tenPhim}
         </Typography>
-        <Button variant="contained">Tạo lịch chiếu</Button>
       </Box>
       <ScheduleTable lichChieuList={lichChieuList} />
     </Box>

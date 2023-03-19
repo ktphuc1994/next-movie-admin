@@ -14,14 +14,14 @@ export interface InterfaceMovieSchedule extends InterfaceMovie {
 
 export interface InterfaceScheduleTableHead {
   maLichChieu: number;
-  maHeThongRap: string;
-  maCumRap: string;
-  maRap: number;
+  tenHeThongRap: string;
+  tenCumRap: string;
+  tenRap: string;
   ngayGioChieu: string;
 }
 
 export interface InterfaceFlattenSchedule extends InterfaceScheduleTableHead {
-  tenHeThongRap: string;
-  tenCumRap: string;
-  tenRap: string;
+  maHeThongRap: string;
+  maCumRap: string;
+  maRap: number;
 }

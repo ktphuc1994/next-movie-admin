@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useState, useReducer } from 'react';
 
 // import Next
 
@@ -7,6 +7,10 @@ import moment from 'moment';
 
 // import local utilities
 import { getComparator } from 'core/utilities';
+import {
+  scheduleFilterReducer,
+  scheduleFilterReducerGen2,
+} from 'core/helpers/movie';
 
 // import types and interfaces
 import { Order } from 'core/interface/common/index.interface';
@@ -18,7 +22,10 @@ import EnhancedTableHead from '../List/TableHead';
 import TableLoading from '../../Spinner/TableLoading';
 
 // import default values
-import { movieScheduleHeadCells } from 'core/constants/default.const';
+import {
+  defaultMovieScheduleFilter,
+  movieScheduleHeadCells,
+} from 'core/constants/default.const';
 
 // import MUI components
 import Box from '@mui/material/Box';
@@ -36,9 +43,13 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const ScheduleTable = memo(
   ({ lichChieuList }: InterfaceScheduleTableComponent) => {
+    const [state, dispatch] = useReducer(
+      scheduleFilterReducerGen2<InterfaceScheduleTableHead>(),
+      defaultMovieScheduleFilter
+    );
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] =
-      useState<keyof InterfaceScheduleTableHead>('maHeThongRap');
+      useState<keyof InterfaceScheduleTableHead>('tenHeThongRap');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [dense, setDense] = useState(false);
@@ -49,7 +60,6 @@ const ScheduleTable = memo(
           <TableLoading />
         </Box>
       );
-    // console.log(lichChieuList);
 
     const emptyRows =
       page > 0

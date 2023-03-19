@@ -56,8 +56,21 @@ export const movieListHeadCells: readonly HeadCell<InterfaceMovie>[] = [
 export const movieScheduleHeadCells: readonly HeadCell<InterfaceScheduleTableHead>[] =
   [
     { id: 'maLichChieu', cellAlign: 'left', label: 'Mã lịch chiếu' },
-    { id: 'maHeThongRap', cellAlign: 'left', label: 'Hệ thống rạp' },
-    { id: 'maCumRap', cellAlign: 'left', label: 'Cụm rạp' },
-    { id: 'maRap', cellAlign: 'left', label: 'Tên rạp' },
+    {
+      id: 'tenHeThongRap',
+      cellAlign: 'left',
+      label: 'Hệ thống rạp',
+      filter: true,
+    },
+    { id: 'tenCumRap', cellAlign: 'left', label: 'Cụm rạp', filter: true },
+    { id: 'tenRap', cellAlign: 'left', label: 'Tên rạp', filter: true },
     { id: 'ngayGioChieu', cellAlign: 'right', label: 'Ngày giờ chiếu' },
   ];
+
+export const defaultMovieScheduleFilter: InterfaceScheduleTableHead = {
+  maLichChieu: 0,
+  tenHeThongRap: '',
+  tenCumRap: '',
+  tenRap: '',
+  ngayGioChieu: '',
+};
