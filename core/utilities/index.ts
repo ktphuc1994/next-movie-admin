@@ -14,6 +14,11 @@ type TypeEquals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
   ? true
   : false;
 
+type IncludeMatchingProperties<T, V> = Pick<
+  T,
+  { [K in keyof T]-?: T[K] extends V ? K : never }[keyof T]
+>;
+
 const descendingComparator = <T>(a: T, b: T, orderBy: keyof T) => {
   const aIn = a[orderBy];
   const bIn = b[orderBy];
@@ -57,4 +62,4 @@ const axiosErrorHandling = (err: AxiosError<AxiosErrorData>) => {
 };
 
 export { unknownErr, collator, getComparator, axiosErrorHandling };
-export type { TypeEquals };
+export type { TypeEquals, IncludeMatchingProperties };

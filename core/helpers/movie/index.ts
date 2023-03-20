@@ -52,8 +52,8 @@ export const scheduleFilterReducer = (
 // };
 
 export const scheduleFilterReducerGen2 =
-  <T>() =>
-  (state: T, action: { type: keyof T; payload: T[keyof T] }) => {
+  <K extends PropertyKey>() =>
+  (state: Record<K, string>, action: { type: K; payload: string }) => {
     const { type, payload } = action;
     const newState = { ...state };
     newState[type] = payload;

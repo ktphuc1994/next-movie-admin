@@ -1,4 +1,4 @@
-import { useState, MouseEvent } from 'react';
+import { useState, useRef, MouseEvent } from 'react';
 
 // import types and interfaces
 import { InterfaceEnhancedTableHead } from 'core/interface/components/table.interface';
@@ -11,17 +11,21 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
-import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
 import visuallyHidden from '@mui/utils/visuallyHidden';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { IncludeMatchingProperties } from '../../../utilities';
 
-const FilterButton = ({
-  id,
-  handleClick,
-}: {
+interface InterfaceHeadFilterButton<T> {
   id: string | undefined;
   handleClick: (e: MouseEvent<HTMLButtonElement>) => void;
-}) => (
+}
+
+const FilterButton = <T,>({
+  id,
+  handleClick,
+}: InterfaceHeadFilterButton<T>) => (
   <IconButton
     aria-label="head cell filter"
     aria-describedby={id}
@@ -36,18 +40,40 @@ const EnhancedTableHead = <T,>({
   order,
   orderBy,
   onRequestSort,
+  state,
+  dispatch,
 }: InterfaceEnhancedTableHead<T>) => {
   // FILTER setting and handling
+  console.log({ state });
+  type FilterIdType = keyof IncludeMatchingProperties<T, string>;
+  const filterRef = useRef<HTMLInputElement | null>(null);
+  const [filterId, setFilterId] = useState<FilterIdType | null>(null);
+  const isFilterIdType = (fId: keyof T): fId is FilterIdType => {
+    return fId in state!;
+  };
+
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const filterOpen = Boolean(anchorEl);
-  const filterId = filterOpen ? 'head-cell-filter-popover' : undefined;
-  const handleFilterClick = (event: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const filterPopoverId = filterOpen ? 'head-cell-filter-popover' : undefined;
+  const handleFilterClick =
+    (id: keyof T) => (event: MouseEvent<HTMLButtonElement>) => {
+      if (!state) return;
+      if (isFilterIdType(id)) {
+        setFilterId(id);
+      }
+      setAnchorEl(event.currentTarget);
+    };
   const handleFilterClose = () => {
+    setFilterId(null);
     setAnchorEl(null);
   };
-  const handleFilter = () => {};
+  const handleFilter = () => {
+    const value = filterRef.current?.value;
+    console.log(value);
+    filterId && value !== undefined && dispatch
+      ? dispatch({ type: filterId, payload: value })
+      : null;
+  };
 
   // Event handler
   const createSortHandler =
@@ -58,7 +84,7 @@ const EnhancedTableHead = <T,>({
   return (
     <>
       <Popover
-        id={filterId}
+        id={filterPopoverId}
         open={filterOpen}
         anchorEl={anchorEl}
         onClose={handleFilterClose}
@@ -67,7 +93,30 @@ const EnhancedTableHead = <T,>({
           horizontal: 'left',
         }}
       >
-        <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+        <Box sx={{ p: '0.2rem' }}>
+          <TextField
+            size="small"
+            margin="none"
+            id="filterInput"
+            name="filterInput"
+            type="text"
+            defaultValue={state && filterId ? state[filterId] : ''}
+            inputRef={filterRef}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="tenPhim-reset"
+                    onClick={handleFilter}
+                    edge="end"
+                  >
+                    <FilterAltIcon fontSize="small" />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
       </Popover>
       <TableHead sx={{ position: 'sticky', top: 0, zIndex: 1 }}>
         <TableRow sx={{ backgroundColor: 'lightgray' }}>
@@ -79,7 +128,10 @@ const EnhancedTableHead = <T,>({
               sx={{ fontSize: '1rem' }}
             >
               {headCell.cellAlign === 'left' && headCell.filter ? (
-                <FilterButton id={filterId} handleClick={handleFilterClick} />
+                <FilterButton
+                  id={filterPopoverId}
+                  handleClick={handleFilterClick(headCell.id)}
+                />
               ) : null}
               <TableSortLabel
                 active={orderBy === headCell.id}
@@ -96,7 +148,10 @@ const EnhancedTableHead = <T,>({
                 ) : null}
               </TableSortLabel>
               {headCell.cellAlign !== 'left' && headCell.filter ? (
-                <FilterButton id={filterId} handleClick={handleFilterClick} />
+                <FilterButton
+                  id={filterPopoverId}
+                  handleClick={handleFilterClick(headCell.id)}
+                />
               ) : null}
             </TableCell>
           ))}

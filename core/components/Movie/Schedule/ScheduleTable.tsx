@@ -25,6 +25,7 @@ import TableLoading from '../../Spinner/TableLoading';
 import {
   defaultMovieScheduleFilter,
   movieScheduleHeadCells,
+  TypeMovieScheduleFilter,
 } from 'core/constants/default.const';
 
 // import MUI components
@@ -44,7 +45,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 const ScheduleTable = memo(
   ({ lichChieuList }: InterfaceScheduleTableComponent) => {
     const [state, dispatch] = useReducer(
-      scheduleFilterReducerGen2<InterfaceScheduleTableHead>(),
+      scheduleFilterReducerGen2<keyof TypeMovieScheduleFilter>(),
       defaultMovieScheduleFilter
     );
     const [order, setOrder] = useState<Order>('asc');
@@ -114,9 +115,17 @@ const ScheduleTable = memo(
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
+              state={state}
+              dispatch={dispatch}
             />
             <TableBody>
               {lichChieuList
+                .filter(
+                  (lichChieu) =>
+                    lichChieu.tenHeThongRap.includes(state.tenHeThongRap) &&
+                    lichChieu.tenCumRap.includes(state.tenCumRap) &&
+                    lichChieu.tenRap.includes(state.tenRap)
+                )
                 .sort(getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
