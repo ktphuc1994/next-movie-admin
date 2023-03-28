@@ -1,4 +1,4 @@
-import { memo, useState, useReducer } from 'react';
+import { memo, useState, useReducer, useMemo } from 'react';
 
 // import Next
 
@@ -25,7 +25,6 @@ import TableLoading from '../../Spinner/TableLoading';
 import {
   defaultMovieScheduleFilter,
   movieScheduleHeadCells,
-  TypeMovieScheduleFilter,
 } from 'core/constants/default.const';
 
 // import MUI components
@@ -44,9 +43,36 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const ScheduleTable = memo(
   ({ lichChieuList }: InterfaceScheduleTableComponent) => {
-    const [state, dispatch] = useReducer(
-      scheduleFilterReducerGen2<keyof TypeMovieScheduleFilter>(),
+    const [filterState, dispatch] = useReducer(
+      scheduleFilterReducerGen2<keyof InterfaceScheduleTableHead>(),
       defaultMovieScheduleFilter
+    );
+    const filterStateRegEx = useMemo<
+      Record<keyof InterfaceScheduleTableHead, RegExp>
+    >(
+      () => ({
+        maLichChieu:
+          filterState.maLichChieu === ''
+            ? /[\s\S]*/
+            : new RegExp(filterState.maLichChieu, 'i'),
+        tenHeThongRap:
+          filterState.tenHeThongRap === ''
+            ? /[\s\S]*/
+            : new RegExp(filterState.tenHeThongRap, 'i'),
+        tenCumRap:
+          filterState.tenCumRap === ''
+            ? /[\s\S]*/
+            : new RegExp(filterState.tenCumRap, 'i'),
+        tenRap:
+          filterState.tenRap === ''
+            ? /[\s\S]*/
+            : new RegExp(filterState.tenRap, 'i'),
+        ngayGioChieu:
+          filterState.ngayGioChieu === ''
+            ? /[\s\S]*/
+            : new RegExp(filterState.ngayGioChieu, 'i'),
+      }),
+      [filterState]
     );
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] =
@@ -61,6 +87,22 @@ const ScheduleTable = memo(
           <TableLoading />
         </Box>
       );
+
+    const filterLichChieuList = useMemo(
+      () =>
+        lichChieuList
+          .filter(
+            (lichChieu) =>
+              filterStateRegEx.maLichChieu.test(
+                lichChieu.maLichChieu.toString()
+              ) &&
+              filterStateRegEx.tenHeThongRap.test(lichChieu.tenHeThongRap) &&
+              filterStateRegEx.tenCumRap.test(lichChieu.tenCumRap) &&
+              filterStateRegEx.tenRap.test(lichChieu.tenRap)
+          )
+          .sort(getComparator(order, orderBy)),
+      [lichChieuList, filterStateRegEx, order, orderBy]
+    );
 
     const emptyRows =
       page > 0
@@ -115,18 +157,11 @@ const ScheduleTable = memo(
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
-              state={state}
+              state={filterState}
               dispatch={dispatch}
             />
             <TableBody>
-              {lichChieuList
-                .filter(
-                  (lichChieu) =>
-                    lichChieu.tenHeThongRap.includes(state.tenHeThongRap) &&
-                    lichChieu.tenCumRap.includes(state.tenCumRap) &&
-                    lichChieu.tenRap.includes(state.tenRap)
-                )
-                .sort(getComparator(order, orderBy))
+              {filterLichChieuList
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (

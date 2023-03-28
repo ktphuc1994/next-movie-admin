@@ -15,7 +15,6 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import visuallyHidden from '@mui/utils/visuallyHidden';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { IncludeMatchingProperties } from '../../../utilities';
 
 interface InterfaceHeadFilterButton<T> {
   id: string | undefined;
@@ -45,32 +44,24 @@ const EnhancedTableHead = <T,>({
 }: InterfaceEnhancedTableHead<T>) => {
   // FILTER setting and handling
   console.log({ state });
-  type FilterIdType = keyof IncludeMatchingProperties<T, string>;
   const filterRef = useRef<HTMLInputElement | null>(null);
-  const [filterId, setFilterId] = useState<FilterIdType | null>(null);
-  const isFilterIdType = (fId: keyof T): fId is FilterIdType => {
-    return fId in state!;
-  };
-
+  const [filterId, setFilterId] = useState<keyof T>(headCells[0].id);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const filterOpen = Boolean(anchorEl);
   const filterPopoverId = filterOpen ? 'head-cell-filter-popover' : undefined;
+
   const handleFilterClick =
     (id: keyof T) => (event: MouseEvent<HTMLButtonElement>) => {
       if (!state) return;
-      if (isFilterIdType(id)) {
-        setFilterId(id);
-      }
+      setFilterId(id);
       setAnchorEl(event.currentTarget);
     };
   const handleFilterClose = () => {
-    setFilterId(null);
     setAnchorEl(null);
   };
   const handleFilter = () => {
     const value = filterRef.current?.value;
-    console.log(value);
-    filterId && value !== undefined && dispatch
+    value !== undefined && dispatch
       ? dispatch({ type: filterId, payload: value })
       : null;
   };

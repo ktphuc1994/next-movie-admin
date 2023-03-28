@@ -1,5 +1,4 @@
 import { Dispatch } from 'react';
-import { IncludeMatchingProperties } from '../../utilities';
 import { Order } from '../common/index.interface';
 import { InterfaceBaseProps } from './index.interface';
 
@@ -15,9 +14,12 @@ export interface InterfaceEnhancedTableHead<T> extends InterfaceBaseProps {
   order: Order;
   orderBy: string;
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof T) => void;
-  state?: IncludeMatchingProperties<T, string>;
-  dispatch?: Dispatch<{
-    type: keyof IncludeMatchingProperties<T, string>;
-    payload: string;
-  }>;
+  state?: Record<keyof T, string>;
+  dispatch?: Dispatch<
+    | { type: 'RESET' }
+    | {
+        type: keyof T;
+        payload: string;
+      }
+  >;
 }

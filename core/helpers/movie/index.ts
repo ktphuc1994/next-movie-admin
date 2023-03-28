@@ -1,3 +1,5 @@
+import { defaultMovieScheduleFilter } from '../../constants/default.const';
+
 export enum ScheduleFilterActionType {
   filterHeThongRap = 'tenHeThongRap',
   filterCumRap = 'tenCumRap',
@@ -53,9 +55,14 @@ export const scheduleFilterReducer = (
 
 export const scheduleFilterReducerGen2 =
   <K extends PropertyKey>() =>
-  (state: Record<K, string>, action: { type: K; payload: string }) => {
-    const { type, payload } = action;
-    const newState = { ...state };
-    newState[type] = payload;
-    return newState;
+  (
+    state: Record<K, string>,
+    action: { type: 'RESET' } | { type: K; payload: string }
+  ) => {
+    if ('payload' in action) {
+      const newState = { ...state };
+      newState[action.type] = action.payload;
+      return newState;
+    }
+    return defaultMovieScheduleFilter;
   };

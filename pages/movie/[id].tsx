@@ -26,7 +26,7 @@ const MovieAndSchedule: NextPageWithLayout = () => {
   const router = useRouter();
   const maPhim = router.query.id as string;
   const { data: movieSchedule } = useSWR(
-    'movie-schedule',
+    ['movie-schedule', maPhim],
     theaterServ.getMovieSchedule(maPhim)
   );
 
