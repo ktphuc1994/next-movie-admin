@@ -8,12 +8,21 @@ import { urlConst } from '../constants/url.const';
 // import local library
 import { Moment } from 'moment';
 import {
+  InterfaceMovie,
   InterfaceMovieCreate,
   InterfaceMoviePagi,
   InterfaceMovieUpdate,
 } from '../interface/models/movie';
 
 const movieServ = {
+  getMovieList:
+    (tenPhim: string = '') =>
+    async (): Promise<InterfaceMovie[]> => {
+      const { data } = await AXIOS_GENERATOR(urlConst.movie).get(
+        '/LayDanhSachPhim?tenPhim=' + tenPhim
+      );
+      return data.content;
+    },
   getMoviePagi: async (
     tenPhim: string = '',
     fromDate: Moment = commonConst.defaultDate.start,

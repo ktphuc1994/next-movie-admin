@@ -1,10 +1,16 @@
 import { InterfaceMovie } from './movie';
 import { InterfaceHeThongRap } from './theater';
 
-export interface InterfaceLichChieu {
-  maLichChieu: number;
+export interface InterfaceCreateLichChieu {
+  maPhim: number;
   maRap: number;
   ngayGioChieu: string;
+}
+export interface InterfaceUpdateLichChieu
+  extends Partial<InterfaceCreateLichChieu> {
+  maLichChieu: number;
+}
+export interface InterfaceLichChieu extends Required<InterfaceUpdateLichChieu> {
   tenRap: string;
 }
 

@@ -1,6 +1,9 @@
 import { HeadCell } from '../interface/components/table.interface';
 import { InterfaceMovie } from '../interface/models/movie';
-import { InterfaceScheduleTableHead } from '../interface/models/schedule';
+import {
+  InterfaceFlattenSchedule,
+  InterfaceScheduleTableHead,
+} from '../interface/models/schedule';
 
 export const danhGiaOption: string[] = [
   '1',
@@ -79,6 +82,17 @@ export const defaultMovieScheduleFilter: Record<
   maLichChieu: '',
   tenHeThongRap: '',
   tenCumRap: '',
+  tenRap: '',
+  ngayGioChieu: '',
+};
+
+export const defaultFlattenSchedule: InterfaceFlattenSchedule = {
+  maLichChieu: 0,
+  maHeThongRap: '',
+  tenHeThongRap: '',
+  maCumRap: '',
+  tenCumRap: '',
+  maRap: 0,
   tenRap: '',
   ngayGioChieu: '',
 };

@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 // import types and interfaces
 import { InterfaceConfirmModalComponents } from '../../interface/components/movieList.interface';
 
@@ -8,6 +10,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 const ConfirmModal = ({
   open,
@@ -15,6 +18,14 @@ const ConfirmModal = ({
   handleConfirm,
   confirmContent,
 }: InterfaceConfirmModalComponents) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleOK = async () => {
+    setLoading(true);
+    await handleConfirm();
+    setLoading(false);
+  };
+
   return (
     <Dialog
       open={open}
@@ -32,8 +43,17 @@ const ConfirmModal = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Hủy</Button>
-        <Button onClick={handleConfirm}>Xác nhận</Button>
+        <Button variant="outlined" color="error" onClick={handleClose}>
+          Hủy
+        </Button>
+        <LoadingButton
+          variant="contained"
+          color="error"
+          loading={loading}
+          onClick={handleOK}
+        >
+          Xác nhận
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

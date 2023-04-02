@@ -41,9 +41,10 @@ const EnhancedTableHead = <T,>({
   onRequestSort,
   state,
   dispatch,
+  setPage,
 }: InterfaceEnhancedTableHead<T>) => {
   // FILTER setting and handling
-  console.log({ state });
+  // console.log({ state });
   const filterRef = useRef<HTMLInputElement | null>(null);
   const [filterId, setFilterId] = useState<keyof T>(headCells[0].id);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -61,9 +62,10 @@ const EnhancedTableHead = <T,>({
   };
   const handleFilter = () => {
     const value = filterRef.current?.value;
-    value !== undefined && dispatch
-      ? dispatch({ type: filterId, payload: value })
-      : null;
+    if (value !== undefined && dispatch) {
+      dispatch({ type: filterId, payload: value });
+      setPage && setPage(0);
+    }
   };
 
   // Event handler
@@ -97,7 +99,7 @@ const EnhancedTableHead = <T,>({
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
-                    aria-label="tenPhim-reset"
+                    aria-label="header-filter"
                     onClick={handleFilter}
                     edge="end"
                   >

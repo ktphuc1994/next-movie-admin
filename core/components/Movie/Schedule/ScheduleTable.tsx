@@ -1,12 +1,16 @@
-import { memo, useState, useReducer, useMemo } from 'react';
-
-// import Next
+import { memo, useRef, useState, useReducer, useMemo } from 'react';
+import { useRouter } from 'next/router';
 
 // import local library
+import { mutate } from 'swr';
 import moment from 'moment';
+import { toast } from 'react-toastify';
+
+// import local services
+import bookingServ from 'core/services/bookingServ';
 
 // import local utilities
-import { getComparator } from 'core/utilities';
+import { axiosErrorHandling, getComparator } from 'core/utilities';
 import {
   scheduleFilterReducer,
   scheduleFilterReducerGen2,
@@ -14,12 +18,16 @@ import {
 
 // import types and interfaces
 import { Order } from 'core/interface/common/index.interface';
-import { InterfaceScheduleTableHead } from 'core/interface/models/schedule';
+import {
+  InterfaceFlattenSchedule,
+  InterfaceScheduleTableHead,
+} from 'core/interface/models/schedule';
 import { InterfaceScheduleTableComponent } from 'core/interface/components/movieSchedule.interface';
 
 // import local components
 import EnhancedTableHead from '../List/TableHead';
 import TableLoading from '../../Spinner/TableLoading';
+import ConfirmModal from '../../Modal/ConfirmModal';
 
 // import default values
 import {
@@ -42,7 +50,23 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const ScheduleTable = memo(
-  ({ lichChieuList }: InterfaceScheduleTableComponent) => {
+  ({
+    lichChieuList,
+    selectedScheduleRef,
+    setFormOpen,
+  }: InterfaceScheduleTableComponent) => {
+    const router = useRouter();
+    const maPhim = router.query.id as string;
+
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const [order, setOrder] = useState<Order>('asc');
+    const [orderBy, setOrderBy] =
+      useState<keyof InterfaceScheduleTableHead>('tenHeThongRap');
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [dense, setDense] = useState(false);
+
+    // FILTER schedule list
     const [filterState, dispatch] = useReducer(
       scheduleFilterReducerGen2<keyof InterfaceScheduleTableHead>(),
       defaultMovieScheduleFilter
@@ -74,42 +98,40 @@ const ScheduleTable = memo(
       }),
       [filterState]
     );
-    const [order, setOrder] = useState<Order>('asc');
-    const [orderBy, setOrderBy] =
-      useState<keyof InterfaceScheduleTableHead>('tenHeThongRap');
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [dense, setDense] = useState(false);
 
-    if (!lichChieuList)
+    const filterLichChieuList = useMemo(() => {
+      if (!lichChieuList) return null;
+      return lichChieuList
+        .filter(
+          (lichChieu) =>
+            filterStateRegEx.maLichChieu.test(
+              lichChieu.maLichChieu.toString()
+            ) &&
+            filterStateRegEx.tenHeThongRap.test(lichChieu.tenHeThongRap) &&
+            filterStateRegEx.tenCumRap.test(lichChieu.tenCumRap) &&
+            filterStateRegEx.tenRap.test(lichChieu.tenRap)
+        )
+        .sort(getComparator(order, orderBy));
+    }, [lichChieuList, filterStateRegEx, order, orderBy]);
+
+    if (!lichChieuList || !filterLichChieuList)
       return (
         <Box component="div" sx={{ flexGrow: 1, position: 'relative' }}>
           <TableLoading />
         </Box>
       );
 
-    const filterLichChieuList = useMemo(
-      () =>
-        lichChieuList
-          .filter(
-            (lichChieu) =>
-              filterStateRegEx.maLichChieu.test(
-                lichChieu.maLichChieu.toString()
-              ) &&
-              filterStateRegEx.tenHeThongRap.test(lichChieu.tenHeThongRap) &&
-              filterStateRegEx.tenCumRap.test(lichChieu.tenCumRap) &&
-              filterStateRegEx.tenRap.test(lichChieu.tenRap)
-          )
-          .sort(getComparator(order, orderBy)),
-      [lichChieuList, filterStateRegEx, order, orderBy]
-    );
-
-    const emptyRows =
-      page > 0
-        ? Math.max(0, (1 + page) * rowsPerPage - lichChieuList.length)
-        : 0;
+    // FORM Control
+    const handleCloseModal = () => {
+      setModalOpen(false);
+    };
 
     // TABLE control
+    const emptyRows =
+      page > 0
+        ? Math.max(0, (1 + page) * rowsPerPage - filterLichChieuList.length)
+        : 0;
+
     const handleRequestSort = (
       event: React.MouseEvent<unknown>,
       property: keyof InterfaceScheduleTableHead
@@ -119,9 +141,16 @@ const ScheduleTable = memo(
       setOrderBy(property);
     };
 
-    const handleEditClick = () => {};
+    const handleEditClick = (schedule: InterfaceFlattenSchedule) => () => {
+      selectedScheduleRef.current = schedule;
+      setFormOpen(true);
+    };
 
-    const handleDeleteClick = () => {};
+    const handleDeleteClick =
+      (scheduleInfo: InterfaceFlattenSchedule) => () => {
+        selectedScheduleRef.current = scheduleInfo;
+        setModalOpen(true);
+      };
 
     const handleChangePage = (event: unknown, newPage: number) => {
       setPage(newPage);
@@ -136,6 +165,20 @@ const ScheduleTable = memo(
 
     const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
       setDense(event.target.checked);
+    };
+
+    // SCHEDULE API Handling
+    const handleDeleteSchedule = async () => {
+      try {
+        await bookingServ.deleteSchedule(
+          selectedScheduleRef.current.maLichChieu
+        );
+        mutate(['movie-schedule', maPhim]);
+        toast.success('Xóa lịch chiếu thành công!');
+        setModalOpen(false);
+      } catch (error) {
+        axiosErrorHandling(error);
+      }
     };
 
     return (
@@ -159,6 +202,7 @@ const ScheduleTable = memo(
               onRequestSort={handleRequestSort}
               state={filterState}
               dispatch={dispatch}
+              setPage={setPage}
             />
             <TableBody>
               {filterLichChieuList
@@ -190,11 +234,14 @@ const ScheduleTable = memo(
                         >
                           <IconButton
                             color="editYellow"
-                            onClick={handleEditClick}
+                            onClick={handleEditClick(row)}
                           >
                             <BorderColorIcon />
                           </IconButton>
-                          <IconButton color="error" onClick={handleDeleteClick}>
+                          <IconButton
+                            color="error"
+                            onClick={handleDeleteClick(row)}
+                          >
                             <DeleteOutlineIcon />
                           </IconButton>
                         </Box>
@@ -217,7 +264,7 @@ const ScheduleTable = memo(
         <TablePagination
           rowsPerPageOptions={[5, 10]}
           component="div"
-          count={lichChieuList.length}
+          count={filterLichChieuList.length}
           rowsPerPage={rowsPerPage}
           labelRowsPerPage="Số dòng trên trang"
           page={page}
@@ -227,6 +274,20 @@ const ScheduleTable = memo(
         <FormControlLabel
           control={<Switch checked={dense} onChange={handleChangeDense} />}
           label="Padding mỏng"
+        />
+        <ConfirmModal
+          open={modalOpen}
+          handleClose={handleCloseModal}
+          handleConfirm={handleDeleteSchedule}
+          confirmContent={
+            <span>
+              Bạn có chắc chắn muốn xóa lịch chiếu{' '}
+              <span style={{ fontWeight: 600 }}>
+                {selectedScheduleRef.current.maLichChieu}
+              </span>
+              ?
+            </span>
+          }
         />
       </Box>
     );

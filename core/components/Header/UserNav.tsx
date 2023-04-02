@@ -2,10 +2,9 @@ import { memo, MouseEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 
 // import SWR
-import useSWR, { mutate } from 'swr';
+import { mutate } from 'swr';
 
 // import type and interface
-import { InterfaceUser } from '../../interface/models/user';
 import { InterfaceCommonContext } from '../../context/interface/common.interface';
 
 // import local hooks

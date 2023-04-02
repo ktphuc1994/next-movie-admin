@@ -14,3 +14,14 @@ export interface InterfaceHeThongRap {
   tenHeThongRap: string;
   cumRap: InterfaceCumRap[];
 }
+
+export interface InterfaceCumRapSelect
+  extends Omit<InterfaceCumRap, 'lichChieuPhim'> {
+  rapPhim: {
+    maRap: number;
+    tenRap: string;
+  }[];
+}
+
+export interface InterfaceHeThongRapSelect
+  extends Omit<InterfaceHeThongRap, 'cumRap'> {}

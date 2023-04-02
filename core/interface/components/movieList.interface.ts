@@ -24,6 +24,6 @@ export interface InterfaceMovieFormComponents extends InterfaceBaseProps {
 export interface InterfaceConfirmModalComponents extends InterfaceBaseProps {
   open: boolean;
   handleClose: () => void;
-  handleConfirm: () => void;
+  handleConfirm: (() => void) | (() => Promise<void>);
   confirmContent: ReactNode;
 }

@@ -3,4 +3,5 @@ export const urlConst = {
   user: BASE_URL + '/QuanLyNguoiDung',
   movie: BASE_URL + '/QuanLyPhim',
   theater: BASE_URL + '/QuanLyRap',
+  booking: BASE_URL + '/QuanLyDatVe',
 };

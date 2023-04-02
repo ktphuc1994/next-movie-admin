@@ -66,7 +66,7 @@ const MovieTable = ({
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const phimRef = useRef<{ maPhim: number; tenPhim: string }>({
     maPhim: 0,
     tenPhim: '',

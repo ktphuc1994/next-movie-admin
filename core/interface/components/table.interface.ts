@@ -1,4 +1,4 @@
-import { Dispatch } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { Order } from '../common/index.interface';
 import { InterfaceBaseProps } from './index.interface';
 
@@ -22,4 +22,5 @@ export interface InterfaceEnhancedTableHead<T> extends InterfaceBaseProps {
         payload: string;
       }
   >;
+  setPage?: Dispatch<SetStateAction<number>>;
 }
