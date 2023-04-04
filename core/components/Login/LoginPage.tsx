@@ -19,7 +19,7 @@ import { InterfaceLoginPageComponent } from '../../interface/components/index.in
 import StyledTextField, { inputStyle } from '../Styled/StyledTextField';
 
 // import local utils
-import { unknownErr } from '../../utilities';
+import { axiosErrorHandling } from '../../utilities';
 
 // import MUI components
 import Box from '@mui/material/Box';
@@ -69,18 +69,7 @@ const LoginPage = ({ setLoading }: InterfaceLoginPageComponent) => {
         );
       }
     } catch (err) {
-      if (err instanceof AxiosError) {
-        const message = err.response?.data.message as string | string[];
-        Array.isArray(message)
-          ? message.forEach((mess) => {
-              setTimeout(() => {
-                toast.error(mess);
-              }, 500);
-            })
-          : toast.error(message);
-      } else {
-        unknownErr();
-      }
+      axiosErrorHandling(err);
     } finally {
       setLoading(false);
     }

@@ -6,6 +6,9 @@ import useSWR, { mutate } from 'swr';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 
+// import local hooks
+import { useCommonContext } from 'core/context/CommonContext';
+
 // import local services
 import movieServ from 'core/services/movieServ';
 
@@ -16,15 +19,19 @@ import {
   InterfaceMovie,
   InterfaceMovieUpdate,
 } from 'core/interface/models/movie';
-import { InterfaceMovieTableComponents } from 'core/interface/components/index.interface';
+import { InterfaceMovieTableComponents } from 'core/interface/components/movieList.interface';
+import { InterfaceCommonContext } from 'core/context/interface/common.interface';
 
 // import local components
 import EnhancedTableHead from './TableHead';
 import ConfirmModal from '../../Modal/ConfirmModal';
-import InnerSpinner from '../../Spinner/InnerSpinner';
+import TableLoading from '../../Spinner/TableLoading';
 
 // import local utils
 import { axiosErrorHandling, getComparator } from 'core/utilities';
+
+// import local constants
+import { movieListHeadCells } from 'core/constants/default.const';
 
 // import MUI components
 import Box from '@mui/material/Box';
@@ -41,19 +48,9 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import IconButton from '@mui/material/IconButton';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import IconButton from '@mui/material/IconButton';
-
-const TableLoading = ({ bgColor }: { bgColor?: string }) => (
-  <InnerSpinner
-    color="error"
-    size="3rem"
-    thickness={4}
-    disableAbsolute={false}
-    bgColor={bgColor}
-  />
-);
 
 const MovieTable = ({
   tenPhimRef,
@@ -63,12 +60,13 @@ const MovieTable = ({
   movieDetailRef,
 }: InterfaceMovieTableComponents) => {
   const router = useRouter();
+  const { setMoviePath } = useCommonContext() as InterfaceCommonContext;
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof InterfaceMovie>('ngayKhoiChieu');
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const phimRef = useRef<{ maPhim: number; tenPhim: string }>({
     maPhim: 0,
     tenPhim: '',
@@ -101,6 +99,17 @@ const MovieTable = ({
     setOrderBy(property);
   };
 
+  const handleMovieEditClick = (movieInfo: InterfaceMovie) => () => {
+    // console.log(movieInfo);
+    movieDetailRef.current = movieInfo;
+    setMovieFormOpen(true);
+  };
+
+  const handleDeleteClick = (maPhim: number, tenPhim: string) => () => {
+    phimRef.current = { maPhim, tenPhim };
+    setConfirmOpen(true);
+  };
+
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -124,6 +133,7 @@ const MovieTable = ({
   // MOVIE API event handlers
   const handleTenPhimClick = (maPhim: number | undefined) => () => {
     if (!maPhim) return;
+    setMoviePath(`/movie/${maPhim}`);
     router.push(`/movie/${maPhim}`);
   };
 
@@ -152,16 +162,6 @@ const MovieTable = ({
       handleMovieUpdate({ maPhim, hot });
     };
 
-  const handleMovieEditClick = (movieInfo: InterfaceMovie) => () => {
-    // console.log(movieInfo);
-    movieDetailRef.current = movieInfo;
-    setMovieFormOpen(true);
-  };
-
-  const handleDeleteClick = (maPhim: number, tenPhim: string) => () => {
-    phimRef.current = { maPhim, tenPhim };
-    setConfirmOpen(true);
-  };
   const handleDeleteConfirm = () => {
     movieServ
       .deleteMovie(phimRef.current.maPhim)
@@ -201,7 +201,8 @@ const MovieTable = ({
           size={dense ? 'small' : 'medium'}
           sx={{ minWidth: 750 }}
         >
-          <EnhancedTableHead
+          <EnhancedTableHead<InterfaceMovie>
+            headCells={movieListHeadCells}
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
@@ -211,8 +212,6 @@ const MovieTable = ({
               .sort(getComparator(order, orderBy))
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
-                const labelId = `enhanced-table-checkbox-${index}`;
-
                 return (
                   <TableRow
                     hover
@@ -220,7 +219,7 @@ const MovieTable = ({
                     tabIndex={-1}
                     key={row.maPhim}
                   >
-                    <TableCell component="th" id={labelId} scope="row">
+                    <TableCell component="th" scope="row">
                       {row.maPhim}
                     </TableCell>
                     <TableCell
@@ -296,7 +295,7 @@ const MovieTable = ({
             {emptyRows > 0 && (
               <TableRow
                 style={{
-                  height: (dense ? 33 : 53) * emptyRows,
+                  height: (dense ? 53 : 73) * emptyRows,
                 }}
               >
                 <TableCell colSpan={7} />

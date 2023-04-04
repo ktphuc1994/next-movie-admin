@@ -2,10 +2,6 @@ import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { AxiosErrorData, Order } from '../interface/common/index.interface';
 
-const unknownErr = () => {
-  toast.error('Lỗi không xác định. Vui lòng thử lại sau.');
-};
-
 const collator = new Intl.Collator('en', { numeric: true });
 
 type TypeEquals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
@@ -13,6 +9,11 @@ type TypeEquals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
 >() => T extends Y ? 1 : 2
   ? true
   : false;
+
+type IncludeMatchingProperties<T, V> = Pick<
+  T,
+  { [K in keyof T]-?: T[K] extends V ? K : never }[keyof T]
+>;
 
 const descendingComparator = <T>(a: T, b: T, orderBy: keyof T) => {
   const aIn = a[orderBy];
@@ -41,20 +42,25 @@ const getComparator = <Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 };
 
-const axiosErrorHandling = (err: AxiosError<AxiosErrorData>) => {
-  if (err.response) {
-    const message = err.response.data.message;
-    Array.isArray(message)
-      ? message.forEach((mess) => {
-          setTimeout(() => {
-            toast.error(mess);
-          }, 500);
-        })
-      : toast.error(message);
-  } else {
+const axiosErrorHandling = (err: unknown | any) => {
+  if (err instanceof AxiosError<AxiosErrorData>) {
+    if (err.response) {
+      const message = err.response.data.message;
+      Array.isArray(message)
+        ? message.forEach((mess) => {
+            setTimeout(() => {
+              toast.error(mess);
+            }, 500);
+          })
+        : toast.error(message);
+      return;
+    }
     toast.error(err.message);
+    return;
   }
+  toast.error('Unknown Error. Please try again later.');
+  console.log(err);
 };
 
-export { unknownErr, collator, getComparator, axiosErrorHandling };
-export type { TypeEquals };
+export { collator, getComparator, axiosErrorHandling };
+export type { TypeEquals, IncludeMatchingProperties };
