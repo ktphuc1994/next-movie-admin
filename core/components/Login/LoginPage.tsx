@@ -10,7 +10,6 @@ import localServ from '../../services/localServ';
 // import local library
 import { mutate } from 'swr';
 import { toast } from 'react-toastify';
-import { AxiosError } from 'axios';
 
 // import types and interfaces
 import { InterfaceLoginPageComponent } from '../../interface/components/index.interface';
@@ -90,7 +89,7 @@ const LoginPage = ({ setLoading }: InterfaceLoginPageComponent) => {
           label="Email Address"
           name="email"
           type="email"
-          defaultValue=""
+          defaultValue="khucthienphuc@gmail.com"
           autoComplete="email"
           autoFocus
           sx={{ mb: '1rem' }}
@@ -126,7 +125,7 @@ const LoginPage = ({ setLoading }: InterfaceLoginPageComponent) => {
             }
             label="Mật khẩu"
             name="matKhau"
-            defaultValue=""
+            defaultValue="ktphuc1994"
             autoComplete="password"
           />
         </FormControl>

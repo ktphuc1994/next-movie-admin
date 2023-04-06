@@ -1,5 +1,11 @@
 import { memo } from 'react';
 
+// import local types and interface
+import { InterfaceSidebar } from '../../interface/components/index.interface';
+
+// import local components
+import SidebarContent from './SidebarContent';
+
 // import MUI components
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -9,12 +15,6 @@ import MuiDrawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-
-// import local types and interface
-import { InterfaceSidebar } from '../../interface/components/index.interface';
-
-// import local components
-import SidebarContent from './SidebarContent';
 
 const drawerWidth = 240;
 

@@ -4,6 +4,7 @@ import {
   InterfaceFlattenSchedule,
   InterfaceScheduleTableHead,
 } from '../interface/models/schedule';
+import { InterfaceUser } from '../interface/models/user';
 
 export const danhGiaOption: string[] = [
   '1',
@@ -95,4 +96,12 @@ export const defaultFlattenSchedule: InterfaceFlattenSchedule = {
   maRap: 0,
   tenRap: '',
   ngayGioChieu: '',
+};
+
+export const defaultFilterInfo: Record<keyof InterfaceUser, string> = {
+  taiKhoan: '',
+  email: '',
+  hoTen: '',
+  loaiNguoiDung: '',
+  soDT: '',
 };
