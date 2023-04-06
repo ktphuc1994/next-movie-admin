@@ -10,7 +10,7 @@ import { useCommonContext } from '../context/CommonContext';
 
 // import local type and interface
 import { AxiosError } from 'axios';
-import { InterfaceUser } from '../interface/models/user';
+import { InterfaceUserInfo } from '../interface/models/user';
 import { InterfaceLayout } from './interface/HOC.interface';
 import { InterfaceCommonContext } from '../context/interface/common.interface';
 
@@ -43,7 +43,7 @@ const Layout = ({
   const { setUser } = useCommonContext() as InterfaceCommonContext;
 
   const { data: userInfo, error: userErr } = useSWR<
-    InterfaceUser,
+    InterfaceUserInfo,
     AxiosError<{ error: string; message: string }>
   >('user', userServ.getUserInfo, {
     onSuccess: (data) => {

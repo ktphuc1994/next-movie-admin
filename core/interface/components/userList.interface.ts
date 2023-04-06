@@ -15,4 +15,6 @@ export interface InterfaceUserListTableComponents extends InterfaceBaseProps {
 }
 
 export interface InterfaceUserFilterContentComponents
-  extends Omit<InterfaceUserFilterComponent, 'open'> {}
+  extends Pick<InterfaceUserFilterComponent, 'setFilterInfo'> {
+  setOpen?: Dispatch<SetStateAction<boolean>>;
+}

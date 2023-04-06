@@ -4,7 +4,9 @@ import { memo } from 'react';
 import { InterfaceUserFilterComponent } from 'core/interface/components/userList.interface';
 
 // import MUI components
-import { styled, Theme, CSSObject } from '@mui/material/styles';
+import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import MuiDrawer from '@mui/material/Drawer';
@@ -58,64 +60,70 @@ const Drawer = styled(MuiDrawer, {
 
 const UserFilter = memo(
   ({ open, setOpen, setFilterInfo }: InterfaceUserFilterComponent) => {
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.up('md'));
+
     const handleClose = () => {
       setOpen(false);
     };
-    return (
-      <>
+
+    if (matches)
+      return (
         <Drawer
           variant="permanent"
           anchor="right"
           PaperProps={{ sx: { position: 'relative', border: 'none' } }}
           open={open}
           sx={{
-            display: { xs: 'none', md: 'block' },
             height: '100%',
           }}
         >
-          <DrawerHeader>
-            <Typography
-              component="span"
-              fontSize="1.5rem"
-              fontWeight={700}
-              color="primary"
-            >
-              Filter User
-            </Typography>
-          </DrawerHeader>
-          <Divider />
-          <UserFilterContent setOpen={setOpen} setFilterInfo={setFilterInfo} />
+          <Box>
+            <DrawerHeader>
+              <Typography
+                component="span"
+                fontSize="1.5rem"
+                fontWeight={700}
+                color="primary"
+              >
+                Filter User
+              </Typography>
+            </DrawerHeader>
+            <Divider />
+            <UserFilterContent setFilterInfo={setFilterInfo} />
+          </Box>
         </Drawer>
-        <MuiDrawer
-          variant="temporary"
-          anchor="right"
-          open={open}
-          onClose={handleClose}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            display: { md: 'none' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-            },
-          }}
-        >
-          <DrawerHeader>
-            <Typography
-              component="span"
-              fontSize="1.5rem"
-              fontWeight={700}
-              color="primary"
-            >
-              Filter User
-            </Typography>
-          </DrawerHeader>
-          <Divider />
-          <UserFilterContent setOpen={setOpen} setFilterInfo={setFilterInfo} />
-        </MuiDrawer>
-      </>
+      );
+
+    return (
+      <MuiDrawer
+        variant="temporary"
+        anchor="right"
+        open={open}
+        onClose={handleClose}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
+        }}
+        sx={{
+          '& .MuiDrawer-paper': {
+            boxSizing: 'border-box',
+            width: drawerWidth,
+          },
+        }}
+      >
+        <DrawerHeader>
+          <Typography
+            component="span"
+            fontSize="1.5rem"
+            fontWeight={700}
+            color="primary"
+          >
+            Filter User
+          </Typography>
+        </DrawerHeader>
+        <Divider />
+        <UserFilterContent setOpen={setOpen} setFilterInfo={setFilterInfo} />
+      </MuiDrawer>
     );
   }
 );

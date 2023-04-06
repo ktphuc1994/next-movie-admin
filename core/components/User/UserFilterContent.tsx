@@ -22,15 +22,11 @@ import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 
 const UserFilterContent = ({
   setOpen,
   setFilterInfo,
 }: InterfaceUserFilterContentComponents) => {
-  const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.down('md'));
   const hoTenRef = useRef<HTMLInputElement | null>(null);
 
   const handleResetHoTen = () => {
@@ -48,7 +44,7 @@ const UserFilterContent = ({
       string
     >;
     setFilterInfo(filteredData);
-    if (matches) setOpen(false);
+    if (setOpen) setOpen(false);
     mutate(['user-list', filteredData.hoTen]);
   };
 
