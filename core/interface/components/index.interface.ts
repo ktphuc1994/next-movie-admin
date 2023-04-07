@@ -26,3 +26,10 @@ export interface InterfaceSidebar extends InterfaceBaseProps {
 }
 
 export interface InterfaceHeader extends InterfaceSidebar {}
+
+// utils
+export interface InterfaceDropUpload extends InterfaceBaseProps {
+  defaultURL: string | null | undefined;
+  // file: File | undefined;
+  // setFile: Dispatch<SetStateAction<File | undefined>>;
+}

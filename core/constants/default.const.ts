@@ -6,6 +6,13 @@ import {
 } from '../interface/models/schedule';
 import { InterfaceUser } from '../interface/models/user';
 
+export const imageDataType = [
+  'image/jpg',
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+];
+
 export const danhGiaOption: string[] = [
   '1',
   '2',

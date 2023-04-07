@@ -11,6 +11,7 @@ import { mutate } from 'swr';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import Stack from '@mui/material/Stack';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -30,7 +31,8 @@ const SearchBar = memo(
         component="div"
         sx={{
           display: 'flex',
-          alignItems: 'center',
+          flexDirection: { xs: 'column', md: 'row' },
+          alignItems: { xs: 'stretch', md: 'center' },
           mb: '1rem',
           flexShrink: 0,
         }}
@@ -58,30 +60,35 @@ const SearchBar = memo(
             ),
           }}
         />
-        <DatePicker
-          label="Từ ngày"
-          format="DD/MM/YYYY"
-          sx={{ mx: { xs: 0, md: '1rem' } }}
-          slotProps={{
-            textField: { size: 'small' },
-            actionBar: { actions: ['clear'] },
-          }}
-          onChange={(newValue: Moment | null) => {
-            fromDateRef.current = newValue;
-          }}
-        />
-        <DatePicker
-          label="Đến ngày"
-          format="DD/MM/YYYY"
-          slotProps={{
-            textField: { size: 'small' },
-            actionBar: { actions: ['clear'] },
-          }}
-          onChange={(newValue: Moment | null) => {
-            toDateRef.current = newValue;
-          }}
-        />
-        <Button variant="contained" onClick={handleSearch} sx={{ ml: '1rem' }}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          sx={{ mx: { md: 1 }, my: { xs: 1, md: 0 } }}
+          spacing={1}
+        >
+          <DatePicker
+            label="Từ ngày"
+            format="DD/MM/YYYY"
+            slotProps={{
+              textField: { size: 'small', fullWidth: true },
+              actionBar: { actions: ['clear'] },
+            }}
+            onChange={(newValue: Moment | null) => {
+              fromDateRef.current = newValue;
+            }}
+          />
+          <DatePicker
+            label="Đến ngày"
+            format="DD/MM/YYYY"
+            slotProps={{
+              textField: { size: 'small', fullWidth: true },
+              actionBar: { actions: ['clear'] },
+            }}
+            onChange={(newValue: Moment | null) => {
+              toDateRef.current = newValue;
+            }}
+          />
+        </Stack>
+        <Button variant="contained" onClick={handleSearch}>
           Tìm
         </Button>
       </Box>

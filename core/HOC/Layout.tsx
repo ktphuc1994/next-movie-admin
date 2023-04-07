@@ -106,6 +106,7 @@ const Layout = ({
             display: 'flex',
             flexDirection: 'column',
             minHeight: '100vh',
+            width: '100%',
           }}
         >
           <Header sideOpen={sideOpen} setSideOpen={setSideOpen} />

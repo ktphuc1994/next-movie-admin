@@ -49,7 +49,14 @@ const UserManagement: NextPageWithLayout = () => {
   return (
     <Box sx={{ height: '100%', display: 'flex' }}>
       {/* USER LIST Content (Title and Table) */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          flexGrow: 1,
+        }}
+      >
         <Box
           sx={{
             mx: { xs: 1, md: 2 },
