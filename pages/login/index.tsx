@@ -19,7 +19,7 @@ import { ScreenSpinner } from 'core/components/Spinner/ScreenSpinner';
 import InnerSpinner from 'core/components/Spinner/InnerSpinner';
 
 // import type and interface
-import { InterfaceUser } from 'core/interface/models/user';
+import { InterfaceUserInfo } from 'core/interface/models/user';
 import { InterfaceCommonContext } from 'core/context/interface/common.interface';
 
 // import MUI Components
@@ -29,7 +29,7 @@ const Login = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const { setUser } = useCommonContext() as InterfaceCommonContext;
 
-  const { data: userInfo, isLoading } = useSWR<InterfaceUser>(
+  const { data: userInfo, isLoading } = useSWR<InterfaceUserInfo>(
     'user',
     userServ.getUserInfo,
     {

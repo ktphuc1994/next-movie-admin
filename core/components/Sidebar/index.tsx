@@ -1,20 +1,20 @@
 import { memo } from 'react';
 
+// import local types and interface
+import { InterfaceSidebar } from '../../interface/components/index.interface';
+
+// import local components
+import SidebarContent from './SidebarContent';
+
 // import MUI components
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MuiDrawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-
-// import local types and interface
-import { InterfaceSidebar } from '../../interface/components/index.interface';
-
-// import local components
-import SidebarContent from './SidebarContent';
 
 const drawerWidth = 240;
 
@@ -67,6 +67,7 @@ const Drawer = styled(MuiDrawer, {
 
 const Sidebar = memo(({ sideOpen, setSideOpen }: InterfaceSidebar) => {
   const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up('md'));
 
   const handleDrawerOpen = () => {
     setSideOpen(true);
@@ -76,15 +77,9 @@ const Sidebar = memo(({ sideOpen, setSideOpen }: InterfaceSidebar) => {
     setSideOpen(false);
   };
 
-  return (
-    <Box sx={{ display: 'flex' }}>
-      <Drawer
-        variant="permanent"
-        open={sideOpen}
-        sx={{
-          display: { xs: 'none', md: 'block' },
-        }}
-      >
+  if (matches)
+    return (
+      <Drawer variant="permanent" open={sideOpen}>
         <DrawerHeader>
           {sideOpen ? (
             <IconButton onClick={handleDrawerClose}>
@@ -103,34 +98,35 @@ const Sidebar = memo(({ sideOpen, setSideOpen }: InterfaceSidebar) => {
         <Divider />
         <SidebarContent open={sideOpen} />
       </Drawer>
-      <MuiDrawer
-        variant="temporary"
-        open={sideOpen}
-        onClose={handleDrawerClose}
-        ModalProps={{
-          keepMounted: true, // Better open performance on mobile.
-        }}
-        sx={{
-          display: { md: 'none' },
-          '& .MuiDrawer-paper': {
-            boxSizing: 'border-box',
-            width: drawerWidth,
-          },
-        }}
-      >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <SidebarContent open={sideOpen} />
-      </MuiDrawer>
-    </Box>
+    );
+
+  return (
+    <MuiDrawer
+      variant="temporary"
+      open={sideOpen}
+      onClose={handleDrawerClose}
+      ModalProps={{
+        keepMounted: true, // Better open performance on mobile.
+      }}
+      sx={{
+        '& .MuiDrawer-paper': {
+          boxSizing: 'border-box',
+          width: drawerWidth,
+        },
+      }}
+    >
+      <DrawerHeader>
+        <IconButton onClick={handleDrawerClose}>
+          {theme.direction === 'rtl' ? (
+            <ChevronRightIcon />
+          ) : (
+            <ChevronLeftIcon />
+          )}
+        </IconButton>
+      </DrawerHeader>
+      <Divider />
+      <SidebarContent open={sideOpen} />
+    </MuiDrawer>
   );
 });
 

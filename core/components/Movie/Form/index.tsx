@@ -33,6 +33,9 @@ import movieServ from 'core/services/movieServ';
 // import local utilities
 import { axiosErrorHandling } from 'core/utilities';
 
+// import local components
+import DropUpload from '../../Utils/DropUpload';
+
 // import MUI Components
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -204,7 +207,6 @@ const MovieForm = memo(
                   id="tenPhim-form"
                   label="Tên phim"
                   defaultValue={movieDetail.tenPhim}
-                  autoFocus
                 />
               </Grid>
               <Grid item xs={12}>
@@ -225,6 +227,9 @@ const MovieForm = memo(
                   label="Hình ảnh URL"
                   defaultValue={movieDetail.hinhAnh}
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <DropUpload defaultURL={movieDetail.hinhAnh} />
               </Grid>
               <Grid item xs={12}>
                 <TextField

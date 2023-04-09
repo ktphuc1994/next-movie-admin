@@ -62,5 +62,35 @@ const axiosErrorHandling = (err: unknown | any) => {
   console.log(err);
 };
 
-export { collator, getComparator, axiosErrorHandling };
+const downloadInSide = (fileURL: string, fileName: string) => {
+  const link = document.createElement('a');
+  link.href = fileURL;
+  link.download = fileName;
+  link.target = '_blank';
+  link.click();
+};
+
+const downloadImageOutSide = (url: string) => {
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+
+  const newImage = new Image();
+  // newImage.crossOrigin = 'Anonymous';
+  newImage.alt = 'downloaded-image';
+  newImage.src = url;
+  newImage.onload = () => {
+    canvas.width = newImage.width;
+    canvas.height = newImage.height;
+    canvas.innerText = newImage.alt;
+    context?.drawImage(newImage, 0, 0);
+  };
+};
+
+export {
+  collator,
+  getComparator,
+  axiosErrorHandling,
+  downloadInSide,
+  downloadImageOutSide,
+};
 export type { TypeEquals, IncludeMatchingProperties };
