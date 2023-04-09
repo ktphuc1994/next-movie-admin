@@ -4,4 +4,5 @@ export const urlConst = {
   movie: BASE_URL + '/QuanLyPhim',
   theater: BASE_URL + '/QuanLyRap',
   booking: BASE_URL + '/QuanLyDatVe',
+  uploadImage: process.env.NEXT_PUBLIC_CLOUDINARY_URL,
 };
