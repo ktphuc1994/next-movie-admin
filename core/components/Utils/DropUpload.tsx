@@ -1,4 +1,4 @@
-import { ChangeEvent, DragEvent, useEffect, useState } from 'react';
+import { ChangeEvent, DragEvent, KeyboardEvent, useRef, useState } from 'react';
 
 // import local libraray
 import { toast } from 'react-toastify';
@@ -10,52 +10,58 @@ import { InterfaceDropUpload } from 'core/interface/components/index.interface';
 import { imageDataType } from 'core/constants/default.const';
 
 // import local utils
-import { downloadImageOutSide, downloadInSide } from 'core/utilities';
+import { downloadInSide } from 'core/utilities';
 
 // import MUI Components
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import DownloadingIcon from '@mui/icons-material/Downloading';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import UploadIcon from '@mui/icons-material/Upload';
 
-const DropUpload = ({ defaultURL }: InterfaceDropUpload) => {
+const DropUpload = ({
+  file,
+  setFile,
+  fileURL,
+  setFileURL,
+}: InterfaceDropUpload) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [file, setFile] = useState<File | null | undefined>(undefined);
-  const fileURL = file
-    ? URL.createObjectURL(file)
-    : file === null
-    ? undefined
-    : defaultURL
-    ? defaultURL
-    : undefined;
+  const urlInputRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    return () => {
-      if (fileURL) URL.revokeObjectURL(fileURL);
-    };
-  }, [fileURL]);
-
-  const handleUploadImage = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleLoadImage = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
+    const url = URL.createObjectURL(e.target.files[0]);
     setFile(e.target.files[0]);
+    setFileURL(url);
+  };
+
+  const handleImageError = () => {
+    setFileURL('https://i.imgur.com/EmPWFJU.png');
   };
 
   const handleDeleteImage = () => {
     if (fileURL) URL.revokeObjectURL(fileURL);
-    setFile(null);
+    setFile(undefined);
+    setFileURL(undefined);
   };
 
   const handleDownloadImage = () => {
     if (!fileURL) return;
-    if (fileURL === defaultURL) {
-      downloadInSide(fileURL, 'download');
-      return;
-    }
-    if (!file) return;
-    downloadInSide(fileURL, file.name);
+    const fileName = file ? file.name : 'movie-poster';
+    downloadInSide(fileURL, fileName);
+  };
+
+  const handleLoadURL = () => {
+    if (!urlInputRef.current) return;
+    setFileURL(urlInputRef.current.value);
+  };
+  const handleInputEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') setFileURL(e.currentTarget.value);
   };
 
   const handleDrag = (e: DragEvent<HTMLDivElement>) => {
@@ -86,83 +92,144 @@ const DropUpload = ({ defaultURL }: InterfaceDropUpload) => {
         return;
       }
 
+      const url = URL.createObjectURL(file);
       setFile(file);
+      setFileURL(url);
     }
   };
 
   if (!fileURL)
     return (
-      <Box
-        sx={{
-          position: 'relative',
-          border: '1px solid',
-          borderStyle: 'dashed',
-          borderRadius: '0.5rem',
-          py: '1rem',
-          ...(isDragging ? { backgroundColor: 'whitesmoke' } : null),
-        }}
-        component="div"
-        onDragEnter={handleDrag}
-      >
-        <label htmlFor="input-movie-form-image">
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <p
-              style={{ marginTop: 0, marginBottom: '0.5rem', fontWeight: 700 }}
+      <Box display="flex" flexDirection="column" height="100%">
+        <TextField
+          fullWidth
+          size="small"
+          placeholder="Điền URL tại đây hoặc"
+          name="image-url"
+          type="text"
+          defaultValue=""
+          inputRef={urlInputRef}
+          sx={{ flexShrink: 0, mb: 1 }}
+          inputProps={{ onKeyUp: handleInputEnter }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="tenPhim-reset"
+                  onClick={handleLoadURL}
+                  edge="end"
+                >
+                  <UploadIcon fontSize="small" />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Box
+          sx={{
+            width: '100%',
+            p: '1.5rem',
+            position: 'relative',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexGrow: 1,
+            border: '1px solid',
+            borderStyle: 'dashed',
+            borderRadius: '0.5rem',
+            ...(isDragging ? { backgroundColor: 'whitesmoke' } : null),
+          }}
+          component="div"
+          onDragEnter={handleDrag}
+        >
+          <label htmlFor="input-movie-form-image">
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
             >
-              Drag and drop your file here or
-            </p>
-            <Button
-              variant="contained"
-              component="label"
-              size="small"
-              startIcon={<UploadFileIcon />}
-            >
-              Upload Image
-              <input
-                id="input-movie-form-image"
-                hidden
-                accept="image/png, image/jpeg, image/jpg, image/webp"
-                type="file"
-                onChange={handleUploadImage}
-              />
-            </Button>
-          </Box>
-        </label>
-        {isDragging ? (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              borderRadius: '0.5rem',
-            }}
-            component="div"
-            onDragEnter={handleDrag}
-            onDragOver={handleDrag}
-            onDragLeave={handleDrag}
-            onDrop={handleDrop}
-          />
-        ) : null}
+              <p
+                style={{
+                  marginTop: 0,
+                  marginBottom: '0.5rem',
+                  fontWeight: 700,
+                }}
+              >
+                Kẻo và thả hình ảnh tại đây hoặc
+              </p>
+              <Button
+                variant="contained"
+                component="label"
+                size="small"
+                startIcon={<UploadFileIcon />}
+              >
+                Tải hình
+                <input
+                  id="input-movie-form-image"
+                  hidden
+                  accept="image/png, image/jpeg, image/jpg, image/webp"
+                  type="file"
+                  onChange={handleLoadImage}
+                />
+              </Button>
+            </Box>
+          </label>
+          {isDragging ? (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                borderRadius: '0.5rem',
+              }}
+              component="div"
+              onDragEnter={handleDrag}
+              onDragOver={handleDrag}
+              onDragLeave={handleDrag}
+              onDrop={handleDrop}
+            />
+          ) : null}
+        </Box>
       </Box>
     );
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-      <img
-        src={fileURL}
-        alt="uploaded-image"
-        style={{ width: '200px', height: '200px', objectFit: 'contain' }}
-      />
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Tooltip title="Delete">
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        width: '100%',
+        height: '100%',
+      }}
+    >
+      <Box sx={{ height: '100%' }}>
+        <img
+          src={fileURL}
+          onError={handleImageError}
+          alt="uploaded-image"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            flexGrow: 1,
+          }}
+        />
+      </Box>
+
+      <Box
+        sx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          flexShrink: 0,
+        }}
+      >
+        <Tooltip title="Delete" placement="top">
           <IconButton color="error" onClick={handleDeleteImage}>
             <HighlightOffIcon />
           </IconButton>

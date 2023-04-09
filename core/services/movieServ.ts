@@ -1,6 +1,9 @@
 // import AXIOS
 import { AXIOS_GENERATOR } from './configUrl';
 
+// import types and interfaces
+import { UploadImageRes } from '../interface/common/index.interface';
+
 // import local constants
 import { commonConst } from '../constants/common.const';
 import { urlConst } from '../constants/url.const';
@@ -13,6 +16,7 @@ import {
   InterfaceMoviePagi,
   InterfaceMovieUpdate,
 } from '../interface/models/movie';
+import axios from 'axios';
 
 const movieServ = {
   getMovieList:
@@ -53,6 +57,13 @@ const movieServ = {
       `/XoaPhim/${maPhim}`
     );
     return data.content;
+  },
+  uploadImage: async (file: File): Promise<UploadImageRes> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_PRESET);
+    const { data } = await axios.post(urlConst.uploadImage, formData);
+    return data;
   },
 };
 
