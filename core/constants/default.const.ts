@@ -105,10 +105,31 @@ export const defaultFlattenSchedule: InterfaceFlattenSchedule = {
   ngayGioChieu: '',
 };
 
-export const defaultFilterInfo: Record<keyof InterfaceUser, string> = {
+export const defaultUserFilterInfo: Record<keyof InterfaceUser, string> = {
   taiKhoan: '',
   email: '',
   hoTen: '',
   loaiNguoiDung: '',
   soDT: '',
+};
+
+export const defaultUserFormInfo: Partial<InterfaceUser> = {
+  taiKhoan: undefined,
+  email: undefined,
+  hoTen: undefined,
+  loaiNguoiDung: 'USER',
+  soDT: undefined,
+};
+
+export const validateRegEx = {
+  email: {
+    regex: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+    message: 'Email không đúng định dạng',
+  },
+  password: {
+    regex:
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    message:
+      'Mật khẩu phải từ 8 ký tự, ít nhất 1 chữ viết HOA, 1 chữ viết thường, 1 ký tự số và 1 ký tự đặc biệt',
+  },
 };

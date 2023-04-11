@@ -10,6 +10,9 @@ import userServ from 'core/services/userServ';
 import { InterfaceUser } from 'core/interface/models/user';
 import { InterfaceUserFilterContentComponents } from 'core/interface/components/userList.interface';
 
+// import local constants
+import { defaultUserFilterInfo } from 'core/constants/default.const';
+
 // import MUI components
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -35,8 +38,13 @@ const UserFilterContent = ({
     }
   };
 
+  const handleResetForm = (e: FormEvent<HTMLFormElement>) => {
+    setFilterInfo(defaultUserFilterInfo);
+  };
+
   const handleFilter = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const form = e.currentTarget;
     const formData = new FormData(form);
     const filteredData = Object.fromEntries(formData) as Record<
@@ -55,7 +63,7 @@ const UserFilterContent = ({
 
   return (
     <Box sx={{ px: 1, py: 2 }}>
-      <Box component="form" onSubmit={handleFilter}>
+      <Box component="form" onSubmit={handleFilter} onReset={handleResetForm}>
         <Stack spacing={2}>
           <TextField
             fullWidth

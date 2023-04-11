@@ -1,11 +1,12 @@
-import { Dispatch, ReactElement, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, MutableRefObject, ReactNode } from 'react';
 
 // import types and interfaces
 import { CircularProgressProps } from '@mui/material/CircularProgress';
+import { Theme, SxProps } from '@mui/material/styles';
 
 export interface InterfaceBaseProps {
   className?: string;
-  children?: ReactElement;
+  children?: ReactNode;
 }
 
 // Spinner
@@ -34,8 +35,21 @@ export interface InterfaceDropUpload extends InterfaceBaseProps {
   fileURL: string | undefined;
   setFileURL: Dispatch<SetStateAction<string | undefined>>;
 }
+
 export interface InterfaceUploadZone extends InterfaceBaseProps {
-  setImageURL: Dispatch<SetStateAction<string | null | undefined>>;
-  setImageFile: Dispatch<SetStateAction<File | undefined>>;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  handleOK: (file: File | undefined, fileURL: string | undefined) => void;
+  handleCancel: () => void;
+}
+
+export interface InterfaceValidateMatKhau extends InterfaceBaseProps {
+  required?: boolean;
+  validRegEx?: RegExp | false;
+  errMess?: string;
+  fieldRef?: MutableRefObject<HTMLInputElement | null>;
+}
+
+export interface InterfaceCustomCollapse extends InterfaceBaseProps {
+  titleClassName?: string;
+  titleSx?: SxProps<Theme>;
+  title?: React.ReactNode;
 }

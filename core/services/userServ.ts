@@ -3,7 +3,9 @@ import { AXIOS_GENERATOR } from './configUrl';
 
 // import local interface
 import {
+  InterfaceCreateUser,
   InterfaceLogin,
+  InterfaceUpdateUser,
   InterfaceUser,
   InterfaceUserInfo,
   InterfaceUserPagi,
@@ -41,6 +43,26 @@ const userServ = {
   getUserList: async (hoTen: string = ''): Promise<InterfaceUser[]> => {
     const { data } = await AXIOS_GENERATOR(urlConst.user).get(
       `/TimKiemNguoiDung?tuKhoa=${hoTen}`
+    );
+    return data.content;
+  },
+  createUser: async (userInfo: InterfaceCreateUser) => {
+    const { data } = await AXIOS_GENERATOR(urlConst.user).post(
+      '/ThemNguoiDung',
+      userInfo
+    );
+    return data.content;
+  },
+  updateUser: async (userInfo: InterfaceUpdateUser) => {
+    const { data } = await AXIOS_GENERATOR(urlConst.user).put(
+      '/CapNhatThongTinNguoiDungAdmin',
+      userInfo
+    );
+    return data.content;
+  },
+  deleteUser: async (taiKhoan: number) => {
+    const { data } = await AXIOS_GENERATOR(urlConst.user).delete(
+      `/XoaNguoiDung/${taiKhoan}`
     );
     return data.content;
   },
