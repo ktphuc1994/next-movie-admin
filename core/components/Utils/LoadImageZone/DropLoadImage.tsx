@@ -24,7 +24,7 @@ import DownloadingIcon from '@mui/icons-material/Downloading';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import UploadIcon from '@mui/icons-material/Upload';
 
-const DropUpload = ({
+const DropLoadImage = ({
   file,
   setFile,
   fileURL,
@@ -244,4 +244,4 @@ const DropUpload = ({
   );
 };
 
-export default DropUpload;
+export default DropLoadImage;

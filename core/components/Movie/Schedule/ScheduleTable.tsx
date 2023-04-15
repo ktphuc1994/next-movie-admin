@@ -75,26 +75,42 @@ const ScheduleTable = memo(
       Record<keyof InterfaceScheduleTableHead, RegExp>
     >(
       () => ({
-        maLichChieu:
-          filterState.maLichChieu === ''
-            ? /[\s\S]*/
-            : new RegExp(filterState.maLichChieu, 'i'),
-        tenHeThongRap:
-          filterState.tenHeThongRap === ''
-            ? /[\s\S]*/
-            : new RegExp(filterState.tenHeThongRap, 'i'),
-        tenCumRap:
-          filterState.tenCumRap === ''
-            ? /[\s\S]*/
-            : new RegExp(filterState.tenCumRap, 'i'),
-        tenRap:
-          filterState.tenRap === ''
-            ? /[\s\S]*/
-            : new RegExp(filterState.tenRap, 'i'),
-        ngayGioChieu:
-          filterState.ngayGioChieu === ''
-            ? /[\s\S]*/
-            : new RegExp(filterState.ngayGioChieu, 'i'),
+        maLichChieu: filterState.maLichChieu
+          ? new RegExp(
+              filterState.maLichChieu.replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1'),
+              'i'
+            )
+          : /[\s\S]*/,
+        tenHeThongRap: filterState.tenHeThongRap
+          ? new RegExp(
+              filterState.tenHeThongRap.replace(
+                /([.?*+^$[\]\\(){}|-])/g,
+                '\\$1'
+              ),
+              'i'
+            )
+          : /[\s\S]*/,
+        tenCumRap: filterState.tenCumRap
+          ? new RegExp(
+              filterState.tenCumRap.replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1'),
+              'i'
+            )
+          : /[\s\S]*/,
+        tenRap: filterState.tenRap
+          ? new RegExp(
+              filterState.tenRap.replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1'),
+              'i'
+            )
+          : /[\s\S]*/,
+        ngayGioChieu: filterState.ngayGioChieu
+          ? new RegExp(
+              filterState.ngayGioChieu.replace(
+                /([.?*+^$[\]\\(){}|-])/g,
+                '\\$1'
+              ),
+              'i'
+            )
+          : /[\s\S]*/,
       }),
       [filterState]
     );

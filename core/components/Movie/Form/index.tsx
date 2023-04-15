@@ -7,6 +7,7 @@ import {
   Ref,
   useRef,
   useState,
+  useCallback,
 } from 'react';
 
 // import local library
@@ -31,7 +32,7 @@ import {
 import movieServ from 'core/services/movieServ';
 
 // import local components
-import UploadZone from 'core/components/Utils/UploadZone/UploadZone';
+import LoadImageZone from 'core/components/Utils/LoadImageZone/LoadImageZone';
 
 // import local utilities
 import { axiosErrorHandling, downloadInSide } from 'core/utilities';
@@ -103,24 +104,36 @@ const MovieForm = memo(
       : undefined;
     // console.log({ displayImageURL });
 
+    // Image load event handling
     const handleDeleteImage = () => {
       if (imageURL) URL.revokeObjectURL(imageURL);
       setImageURL(null);
       setImageFile(undefined);
     };
-
     const handleDownloadImage = () => {
-      if (!imageURL) return;
+      if (!displayImageURL) return;
       const imageName = imageFile ? imageFile.name : 'movie-poster';
-      downloadInSide(imageURL, imageName);
+      downloadInSide(displayImageURL, imageName);
     };
+    const handleLoadImageOK = useCallback(
+      (file: File | undefined, url: string | undefined) => {
+        if (file) setImageFile(file);
+        if (url) setImageURL(url);
+        setUploadOpen(false);
+      },
+      []
+    );
+    const handleLoadImageCancel = useCallback(() => {
+      setUploadOpen(false);
+    }, []);
 
+    // Form Event handlding
     const handleClose = () => {
       ngayKhoiChieuRef.current = null;
       if (imageURL) {
-        setImageURL(undefined);
         URL.revokeObjectURL(imageURL);
       }
+      setImageURL(undefined);
       setImageFile(undefined);
       setMovieFormOpen(false);
     };
@@ -133,10 +146,10 @@ const MovieForm = memo(
       movieServ[method](info)
         .then(() => {
           mutate('moviePagi');
+          handleClose();
           toast.success(`${notify} phim thành công`, {
             toastId: 'create-movie-success',
           });
-          handleClose();
         })
         .catch(axiosErrorHandling)
         .finally(() => {
@@ -414,10 +427,9 @@ const MovieForm = memo(
           fullWidth
           PaperProps={{ sx: { height: '100%' } }}
         >
-          <UploadZone
-            setImageURL={setImageURL}
-            setImageFile={setImageFile}
-            setOpen={setUploadOpen}
+          <LoadImageZone
+            handleOK={handleLoadImageOK}
+            handleCancel={handleLoadImageCancel}
           />
         </Dialog>
       </>

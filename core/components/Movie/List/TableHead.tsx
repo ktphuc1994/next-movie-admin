@@ -1,4 +1,4 @@
-import { useState, useRef, MouseEvent } from 'react';
+import { useState, useRef, MouseEvent, KeyboardEvent } from 'react';
 
 // import types and interfaces
 import { InterfaceEnhancedTableHead } from 'core/interface/components/table.interface';
@@ -67,6 +67,9 @@ const EnhancedTableHead = <T,>({
       setPage && setPage(0);
     }
   };
+  const handleFilterInputEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') handleFilter();
+  };
 
   // Event handler
   const createSortHandler =
@@ -93,8 +96,10 @@ const EnhancedTableHead = <T,>({
             id="filterInput"
             name="filterInput"
             type="text"
+            autoFocus
             defaultValue={state && filterId ? state[filterId] : ''}
             inputRef={filterRef}
+            inputProps={{ onKeyUp: handleFilterInputEnter }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

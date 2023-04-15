@@ -70,9 +70,7 @@ const Layout = ({
           setModalOpen(true);
           return;
         }
-        toast(userErr.response.data.message ?? userErr.message, {
-          type: 'error',
-        });
+        toast.error(userErr.response.data.message ?? userErr.message);
         return;
       }
     }
