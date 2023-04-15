@@ -38,9 +38,11 @@ import { toast } from 'react-toastify';
 const UserManagement: NextPageWithLayout = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [filterInfo, setFilterInfo] = useState(defaultUserFilterInfo);
+
   const [formOpen, setFormOpen] = useState(false);
   const [userFormInfo, setUserFormInfo] = useState(defaultUserFormInfo);
 
+  // handle click create and setting buttons
   const handleClickCreateUser = () => {
     setFormOpen(true);
     setUserFormInfo(defaultUserFormInfo);
@@ -49,6 +51,8 @@ const UserManagement: NextPageWithLayout = () => {
     setFormOpen(true);
     setUserFormInfo(userInfo);
   };
+
+  // handle user form event
   const handleFormClose = () => {
     setFormOpen(false);
   };
