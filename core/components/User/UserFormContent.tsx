@@ -50,15 +50,19 @@ const UserFormContent = ({
       setButtonLoading(false);
       return;
     }
-    if (!matKhau) {
-      formData.delete('matKhau');
-    }
 
-    const data = Object.fromEntries(formData.entries());
+    const keyValue = [];
+    for (const attr of formData.entries()){
+      if (!attr[1]) continue;
+      keyValue.push(attr);
+    }
+  
+    const roughUserInfo = Object.fromEntries(keyValue);
     const userInfo = {
-      ...data,
+      ...roughUserInfo,
       taiKhoan: defaultUser.taiKhoan,
     } as InterfaceCreateUser & InterfaceUpdateUser;
+    
     const method = isUpdate ? 'updateUser' : 'createUser';
 
     await handleOK(method, userInfo);
