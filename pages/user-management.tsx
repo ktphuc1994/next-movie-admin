@@ -184,7 +184,16 @@ const UserManagement: NextPageWithLayout = () => {
       </Box>
 
       {/* USER LIST Filter Drawer */}
-      <Box sx={{ flexShrink: 0 }}>
+      <Box
+        sx={{
+          flexShrink: 0,
+          position: 'sticky',
+          top: 0,
+          border: 'none',
+          maxHeight: 'calc(100vh - 40px)',
+          overflowY: 'auto',
+        }}
+      >
         <UserFilter
           open={filterOpen}
           setOpen={setFilterOpen}
